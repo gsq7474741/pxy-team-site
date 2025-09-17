@@ -1,0 +1,50 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "db:up": { "cache": false },
+    "db:down": { "cache": false },
+    "dev": { "cache": false, "dependsOn": ["db:up"] },
+    "build": { "dependsOn": ["^build"], "outputs": [".next/**", "build/**", "dist/**"] },
+    "lint": { "outputs": [] },
+    "frontend:dev": { "cache": false },
+    "backend:dev": { "cache": false },
+    "frontend:build": { "dependsOn": ["^build"], "outputs": [".next/**"] },
+    "backend:build": { "dependsOn": ["^build"], "outputs": ["build/**", "dist/**"] },
+    "frontend:lint": { "outputs": [] },
+    "backend:lint": { "outputs": [] },
+    "db:up": { "cache": false },
+    "db:down": { "cache": false },
+    "dev": { "cache": false, "dependsOn": ["db:up"] },
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "build/**", "dist/**"]
+    },
+    "lint": {
+      "outputs": []
+    },
+    "frontend:dev": {
+      "cache": false
+    },
+    "backend:dev": {
+      "cache": false
+    },
+    "frontend:build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**"]
+    },
+    "backend:build": {
+      "dependsOn": ["^build"],
+      "outputs": ["build/**", "dist/**"]
+    },
+    "frontend:lint": {
+      "outputs": []
+    },
+    "backend:lint": {
+      "outputs": []
+    },
+    "db:up": {
+      "cache": false
+    },
+    "db:down": { "cache": false }
+  }
+}

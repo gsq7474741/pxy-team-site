@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_content_highlights",
+  "info": {
+    "displayName": "Highlight",
+    "description": "研究亮点组件"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text",
+      "required": true
+    },
+    "icon": {
+      "type": "string",
+      "default": "✨"
+    },
+    "link": {
+      "type": "string"
+    }
+  }
+}

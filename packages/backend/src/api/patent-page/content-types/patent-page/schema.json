@@ -1,0 +1,28 @@
+{
+  "kind": "singleType",
+  "collectionName": "patent_page",
+  "info": {
+    "singularName": "patent-page",
+    "pluralName": "patent-pages",
+    "displayName": "Patent Page"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "content": {
+      "type": "richtext",
+      "required": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
+    }
+  }
+}

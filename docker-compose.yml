@@ -1,0 +1,17 @@
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: pxy_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: pxy_user
+      POSTGRES_PASSWORD: pxy_pass
+      POSTGRES_DB: pxy_site
+    ports:
+      - '5432:5432'
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
