@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { memberApi, getStrapiMedia } from "@/lib/strapi-client";
+import { memberApi, getStrapiMedia, type MemberViewModel } from "@/lib/strapi-client";
 
 // 成员详情页面参数类型
 interface MemberPageProps {
@@ -11,36 +11,12 @@ interface MemberPageProps {
   };
 }
 
-// 成员类型定义
-interface Member {
-  documentId: string;
-  name: string;
-  english_name: string;
-  role: string;
-  bio: string;
-  email: string;
-  photo?: {
-    url: string;
-  };
-  slug: string;
-  enrollment_year: string;
-  enrollment_status: string;
-  research_interests: string;
-  education_background: string;
-  publications: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
 export default async function MemberDetailPage({ params }: MemberPageProps) {
   const { slug } = params;
-  let member: Member | null = null;
+  let member: MemberViewModel | null = null;
 
   try {
-    const response = await memberApi.getMemberBySlug(slug);
-    if (response && response.data) {
-      member = response.data as unknown as Member;
-    }
+    member = await memberApi.getMemberBySlug(slug);
   } catch (error) {
     console.error("获取成员数据失败:", error);
   }
@@ -51,11 +27,11 @@ export default async function MemberDetailPage({ params }: MemberPageProps) {
   }
 
   // 获取成员信息
-  const { name, english_name, role, bio, email, photo, enrollment_year, enrollment_status } = member;
+  const { name, englishName, role, bio, email, photo, enrollmentYear, enrollmentStatus } = member;
   
   // 将可能的字符串字段转换为数组以便在UI中展示
-  const researchInterests = member.research_interests ? member.research_interests.split('\n').filter(Boolean) : [];
-  const education = member.education_background ? member.education_background.split('\n').filter(Boolean) : [];
+  const researchInterests = member.researchInterests ? member.researchInterests.split('\n').filter(Boolean) : [];
+  const education = member.educationBackground ? member.educationBackground.split('\n').filter(Boolean) : [];
   const publications = member.publications ? member.publications.split('\n').filter(Boolean) : [];
 
   // 头像URL

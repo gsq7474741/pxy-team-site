@@ -1,7 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+ 
 
 export default function HeroSection() {
   return (
@@ -14,14 +13,6 @@ export default function HeroSection() {
           <p className="mt-6 text-lg leading-8 text-muted-foreground">
             探索前沿科技，推动学术创新。我们致力于在人工智能、机器学习和数据科学领域开展尖端研究，培养下一代科研人才。
           </p>
-          <div className="mt-10 flex items-center justify-center gap-x-6">
-            <Button asChild>
-              <Link href="/research">研究方向</Link>
-            </Button>
-            <Button variant="outline" asChild>
-              <Link href="/join">加入我们</Link>
-            </Button>
-          </div>
         </div>
       </div>
       

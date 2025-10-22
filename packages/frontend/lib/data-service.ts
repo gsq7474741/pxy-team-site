@@ -6,22 +6,18 @@
 import { 
   newsApi, 
   memberApi, 
-  researchApi, 
   publicationApi, 
   contactApi, 
   joinUsApi, 
   patentApi, 
   recruitApi,
-  type NewsItem,
-  type Member,
-  type Publication,
-  type ContactPage,
-  type JoinUsPage,
-  type PatentPage,
-  type RecruitPage,
-  type ResearchDirection,
-  type StrapiResponse,
-  type StrapiData
+  type NewsViewModel,
+  type MemberViewModel,
+  type PublicationViewModel,
+  type ContactPageViewModel,
+  type JoinUsPageViewModel,
+  type PatentPageViewModel,
+  type RecruitPageViewModel
 } from './strapi-client';
 
 // 统一的错误处理
@@ -30,24 +26,7 @@ const handleApiError = (error: any, operation: string) => {
   return null;
 };
 
-// 数据转换工具
-const transformStrapiData = <T>(data: StrapiData<T>[] | StrapiData<T> | null): T[] | T | null => {
-  if (!data) return null;
-  
-  if (Array.isArray(data)) {
-    return data.map(item => ({
-      id: item.id,
-      documentId: item.id.toString(),
-      ...item.attributes
-    })) as T[];
-  }
-  
-  return {
-    id: data.id,
-    documentId: data.id.toString(),
-    ...data.attributes
-  } as T;
-};
+// 已不再需要二次转换，统一使用 ViewModel
 
 export class DataService {
   // 新闻数据服务
@@ -55,8 +34,8 @@ export class DataService {
     try {
       const response = await newsApi.getNewsList(page, pageSize);
       return {
-        data: transformStrapiData<NewsItem>(response.data) as NewsItem[],
-        pagination: response.meta?.pagination
+        data: response.data as NewsViewModel[],
+        pagination: response.pagination
       };
     } catch (error) {
       return {
@@ -70,7 +49,7 @@ export class DataService {
   static async getNewsById(id: string) {
     try {
       const response = await newsApi.getNewsById(id);
-      return transformStrapiData<NewsItem>(response.data) as NewsItem;
+      return response as NewsViewModel;
     } catch (error) {
       handleApiError(error, '获取新闻详情');
       return null;
@@ -93,8 +72,8 @@ export class DataService {
     try {
       const response = await memberApi.getMemberList(page, pageSize);
       return {
-        data: transformStrapiData<Member>(response.data) as Member[],
-        pagination: response.meta?.pagination
+        data: response.data as MemberViewModel[],
+        pagination: response.pagination
       };
     } catch (error) {
       return {
@@ -108,31 +87,22 @@ export class DataService {
   static async getMemberBySlug(slug: string) {
     try {
       const response = await memberApi.getMemberBySlug(slug);
-      return transformStrapiData<Member>(response) as Member;
+      return response as MemberViewModel;
     } catch (error) {
       handleApiError(error, '获取团队成员详情');
       return null;
     }
   }
 
-  // 研究方向数据服务
-  static async getResearchPage() {
-    try {
-      const response = await researchApi.getResearchPage();
-      return transformStrapiData<ResearchDirection>(response.data) as ResearchDirection;
-    } catch (error) {
-      handleApiError(error, '获取研究方向内容');
-      return null;
-    }
-  }
+  // 研究方向单页接口已移除，直接使用 researchApi.getResearchAreaList / getResearchAreaBySlug（在各页面内调用）
 
   // 论文成果数据服务
   static async getPublicationList(page = 1, pageSize = 100) {
     try {
       const response = await publicationApi.getPublicationList(page, pageSize);
       return {
-        data: transformStrapiData<Publication>(response.data) as Publication[],
-        pagination: response.meta?.pagination
+        data: response.data as PublicationViewModel[],
+        pagination: response.pagination
       };
     } catch (error) {
       return {
@@ -147,7 +117,7 @@ export class DataService {
   static async getContactPage() {
     try {
       const response = await contactApi.getContactPage();
-      return transformStrapiData<ContactPage>(response) as ContactPage;
+      return response as ContactPageViewModel;
     } catch (error) {
       handleApiError(error, '获取联系页面内容');
       return null;
@@ -157,7 +127,7 @@ export class DataService {
   static async getJoinUsPage() {
     try {
       const response = await joinUsApi.getJoinUsPage();
-      return transformStrapiData<JoinUsPage>(response) as JoinUsPage;
+      return response as JoinUsPageViewModel;
     } catch (error) {
       handleApiError(error, '获取加入我们页面内容');
       return null;
@@ -167,7 +137,7 @@ export class DataService {
   static async getPatentPage() {
     try {
       const response = await patentApi.getPatentPage();
-      return transformStrapiData<PatentPage>(response) as PatentPage;
+      return response as PatentPageViewModel;
     } catch (error) {
       handleApiError(error, '获取专利页面内容');
       return null;
@@ -177,7 +147,7 @@ export class DataService {
   static async getRecruitPage() {
     try {
       const response = await recruitApi.getRecruitPage();
-      return transformStrapiData<RecruitPage>(response) as RecruitPage;
+      return response as RecruitPageViewModel;
     } catch (error) {
       handleApiError(error, '获取招聘页面内容');
       return null;

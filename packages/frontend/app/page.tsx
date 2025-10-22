@@ -3,26 +3,23 @@ import Link from "next/link";
 import HeroSection from "@/components/HeroSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { researchApi, newsApi, type ResearchAreaViewModel, type NewsViewModel, formatDate, stripHtmlTags, truncateText } from "@/lib/strapi-client";
 
-const researchAreas = [
-  {
-    title: "研究领域一",
-    description: "这里是关于研究领域一的简要介绍，我们在这个方向上取得了重要进展。",
-    icon: "🔬",
-  },
-  {
-    title: "研究领域二",
-    description: "这里是关于研究领域二的简要介绍，我们在这个方向上取得了重要进展。",
-    icon: "🧪",
-  },
-  {
-    title: "研究领域三",
-    description: "这里是关于研究领域三的简要介绍，我们在这个方向上取得了重要进展。",
-    icon: "📊",
-  },
-];
-
-export default function Home() {
+export default async function Home() {
+  let researchAreas: ResearchAreaViewModel[] = [];
+  let latestNews: NewsViewModel[] = [];
+  try {
+    const res = await researchApi.getResearchAreaList(1, 100);
+    researchAreas = (res.data || []).sort((a, b) => (a.order ?? 0) - (b.order ?? 0)).slice(0, 3);
+  } catch (error) {
+    console.error("获取研究方向失败:", error);
+  }
+  try {
+    const newsRes = await newsApi.getNewsList(1, 2);
+    latestNews = newsRes.data || [];
+  } catch (error) {
+    console.error("获取新闻列表失败:", error);
+  }
   return (
     <div className="flex flex-col min-h-screen">
       <HeroSection />
@@ -38,10 +35,21 @@ export default function Home() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {researchAreas.map((area, index) => (
-              <Card key={index} className="transition-all hover:shadow-md">
+            {researchAreas.map((area) => (
+              <Card key={area.id} className="transition-all hover:shadow-md">
                 <CardHeader>
-                  <div className="text-4xl mb-2">{area.icon}</div>
+                  {area.coverImage?.url ? (
+                    <div className="relative w-full h-40 mb-2 overflow-hidden rounded-lg">
+                      <Image
+                        src={area.coverImage.url}
+                        alt={area.coverImage.alternativeText || area.title}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="text-4xl mb-2">{area.icon}</div>
+                  )}
                   <CardTitle>{area.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -49,7 +57,7 @@ export default function Home() {
                 </CardContent>
                 <CardFooter>
                   <Button variant="outline" asChild>
-                    <Link href="/research">了解更多</Link>
+                    <Link href={`/research/${area.slug}`}>了解更多</Link>
                   </Button>
                 </CardFooter>
               </Card>
@@ -69,35 +77,28 @@ export default function Home() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>最新论文发表</CardTitle>
-                <CardDescription>2025年7月15日</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p>我们的研究团队最近在顶级期刊上发表了重要论文，取得了突破性进展。</p>
-              </CardContent>
-              <CardFooter>
-                <Button variant="outline" asChild>
-                  <Link href="/news">查看详情</Link>
-                </Button>
-              </CardFooter>
-            </Card>
-            
-            <Card>
-              <CardHeader>
-                <CardTitle>学术讲座通知</CardTitle>
-                <CardDescription>2025年7月20日</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p>我们将举办一场关于前沿技术的学术讲座，欢迎各位同行参加。</p>
-              </CardContent>
-              <CardFooter>
-                <Button variant="outline" asChild>
-                  <Link href="/news">查看详情</Link>
-                </Button>
-              </CardFooter>
-            </Card>
+            {latestNews.length > 0 ? (
+              latestNews.map((n) => (
+                <Card key={n.id} className="transition-all hover:shadow-md">
+                  <CardHeader>
+                    <CardTitle>{n.title}</CardTitle>
+                    <CardDescription>{formatDate(n.publishDate)}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">
+                      {truncateText(stripHtmlTags(n.content || ''), 120)}
+                    </p>
+                  </CardContent>
+                  <CardFooter>
+                    <Button variant="outline" asChild>
+                      <Link href={`/news/${n.id}`}>查看详情</Link>
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))
+            ) : (
+              <div className="col-span-2 text-center text-muted-foreground">暂无动态</div>
+            )}
           </div>
           
           <div className="mt-10 text-center">

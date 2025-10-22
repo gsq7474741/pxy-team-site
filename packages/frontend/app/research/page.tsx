@@ -1,78 +1,25 @@
 import Link from "next/link";
 import Image from "next/image";
-import { researchApi, type ResearchPageViewModel, type ResearchAreaViewModel } from "@/lib/strapi-client";
+import { researchApi, type ResearchAreaViewModel } from "@/lib/strapi-client";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 export default async function ResearchPageComponent() {
   // 获取研究页面数据和研究方向列表
-  let researchPageData: ResearchPageViewModel | null = null;
   let researchAreas: ResearchAreaViewModel[] = [];
 
   try {
-    // 尝试获取研究页面配置（如果有的话）
-    try {
-      researchPageData = await researchApi.getResearchPage();
-    } catch (pageError) {
-      console.log("没有找到研究页面配置，将使用默认标题和描述");
-    }
-    
     // 获取研究方向列表
     const researchAreasResponse = await researchApi.getResearchAreaList();
     researchAreas = researchAreasResponse.data;
   } catch (error) {
     console.error("获取研究方向数据失败:", error);
-    // 如果后端数据获取失败，使用默认数据作为后备
-    researchAreas = [
-      {
-        id: "1",
-        title: "人工智能",
-        description: "探索人工智能的前沿技术和应用，包括深度学习、强化学习和自然语言处理等领域。",
-        icon: "🧠",
-        slug: "ai",
-        order: 1,
-        createdAt: "",
-        updatedAt: ""
-      },
-      {
-        id: "2",
-        title: "机器学习",
-        description: "研究机器学习算法和模型，致力于解决复杂的数据分析和预测问题。",
-        icon: "🤖",
-        slug: "ml",
-        order: 2,
-        createdAt: "",
-        updatedAt: ""
-      },
-      {
-        id: "3",
-        title: "数据科学",
-        description: "利用统计学和计算机科学的方法，从大规模数据中提取知识和见解。",
-        icon: "📊",
-        slug: "data-science",
-        order: 3,
-        createdAt: "",
-        updatedAt: ""
-      },
-      {
-        id: "4",
-        title: "计算机视觉",
-        description: "研究如何使计算机能够从图像或视频中获取高层次的理解，模拟人类视觉系统。",
-        icon: "👁️",
-        slug: "cv",
-        order: 4,
-        createdAt: "",
-        updatedAt: ""
-      }
-    ];
   }
 
   return (
     <div className="max-w-screen-xl mx-auto px-4 md:px-6 py-12">
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold tracking-tight">{researchPageData?.title || "研究方向"}</h1>
-        <div className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto"
-             dangerouslySetInnerHTML={{ __html: researchPageData?.content || "我们课题组专注于以下前沿研究领域，致力于推动学术创新和技术进步。" }} />
+        <h1 className="text-4xl font-bold tracking-tight">研究方向</h1>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -143,30 +90,7 @@ export default async function ResearchPageComponent() {
         ))}
       </div>
 
-      <div className="mt-16 border-t pt-12">
-        <h2 className="text-3xl font-bold tracking-tight text-center mb-8">研究成果</h2>
-        <div className="space-y-6">
-          <div className="bg-muted/30 p-6 rounded-lg">
-            <h3 className="text-xl font-semibold mb-2">最新突破</h3>
-            <p className="text-muted-foreground mb-4">
-              我们课题组最近在[研究领域]取得了重要突破，相关论文已发表在顶级期刊上。
-            </p>
-            <Button asChild size="sm">
-              <Link href="/publications">查看相关论文</Link>
-            </Button>
-          </div>
-          
-          <div className="bg-muted/30 p-6 rounded-lg">
-            <h3 className="text-xl font-semibold mb-2">合作项目</h3>
-            <p className="text-muted-foreground mb-4">
-              我们与多家知名研究机构和企业建立了长期合作关系，共同推进前沿技术研究。
-            </p>
-            <Button asChild size="sm">
-              <Link href="/contact">了解合作机会</Link>
-            </Button>
-          </div>
-        </div>
-      </div>
+      {/* 去除硬编码的底部静态内容，内容由 CMS 管理 */}
     </div>
   );
 }

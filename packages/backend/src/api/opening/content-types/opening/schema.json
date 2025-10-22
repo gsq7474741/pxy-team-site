@@ -1,0 +1,85 @@
+{
+  "kind": "collectionType",
+  "collectionName": "openings",
+  "info": {
+    "singularName": "opening",
+    "pluralName": "openings",
+    "displayName": "Opening",
+    "description": "招聘岗位"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
+    "slug": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "pluginOptions": { "i18n": { "localized": false } }
+    },
+    "position_type": {
+      "type": "enumeration",
+      "enum": ["Postdoc", "PhD", "Master", "RA", "Intern", "Engineer", "Other"],
+      "default": "Other",
+      "pluginOptions": { "i18n": { "localized": false } }
+    },
+    "description": {
+      "type": "richtext",
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
+    "requirements": {
+      "type": "component",
+      "repeatable": true,
+      "component": "content.list-item",
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
+    "benefits": {
+      "type": "component",
+      "repeatable": true,
+      "component": "content.list-item",
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
+    "location": {
+      "type": "string",
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
+    "deadline_date": {
+      "type": "date",
+      "pluginOptions": { "i18n": { "localized": false } }
+    },
+    "contact_email": {
+      "type": "email",
+      "pluginOptions": { "i18n": { "localized": false } }
+    },
+    "apply_link": {
+      "type": "string",
+      "pluginOptions": { "i18n": { "localized": false } }
+    },
+    "order": {
+      "type": "integer",
+      "default": 0,
+      "pluginOptions": { "i18n": { "localized": false } }
+    },
+    "status_field": {
+      "type": "enumeration",
+      "enum": ["Open", "Closed"],
+      "default": "Open",
+      "pluginOptions": { "i18n": { "localized": false } }
+    },
+    "research_areas": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::research-area.research-area"
+    }
+  }
+}

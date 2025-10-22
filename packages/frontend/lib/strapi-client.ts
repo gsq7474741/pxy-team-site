@@ -13,6 +13,8 @@ import {
   NewsViewModel,
   MemberViewModel,
   PublicationViewModel,
+  OpeningViewModel,
+  PatentViewModel,
   ResearchPageViewModel,
   ContactPageViewModel,
   JoinUsPageViewModel,
@@ -25,6 +27,8 @@ import {
   transformNews,
   transformMember,
   transformPublication,
+  transformOpening,
+  transformPatent,
   transformPageData,
   transformNewsList,
   transformMemberList,
@@ -244,24 +248,6 @@ export const memberApi = {
 
 // 研究方向相关 API
 export const researchApi = {
-  // 获取研究方向页面内容（如果有单独的页面配置）
-  async getResearchPage(): Promise<ResearchPageViewModel> {
-    try {
-      const researchSingle = client.single('research-areas');
-      const response = await researchSingle.find({
-        populate: ['cover_image'],
-      }) as unknown as any;
-      
-      if (response.data) {
-        return transformPageData(response.data, 'research') as ResearchPageViewModel;
-      }
-      
-      throw new Error('未找到研究方向页面内容');
-    } catch (error) {
-      console.error('获取研究方向内容失败:', error);
-      throw error;
-    }
-  },
 
   // 获取研究方向列表
   async getResearchAreaList(page = 1, pageSize = 100): Promise<ApiResponse<ResearchAreaViewModel[]>> {
@@ -269,12 +255,9 @@ export const researchApi = {
       const researchAreaCollection = client.collection('research-areas');
       const response = await researchAreaCollection.find({
         populate: {
-          cover_image: {
-            fields: ['*']
-          },
-          related_publications: {
-            fields: ['*']
-          }
+          cover_image: { fields: ['*'] },
+          related_publications: { fields: ['*'] },
+          related_patents: { fields: ['*'] }
         },
         sort: ['order:asc', 'createdAt:desc'],
         pagination: {
@@ -311,12 +294,9 @@ export const researchApi = {
           }
         },
         populate: {
-          cover_image: {
-            fields: ['*']
-          },
-          related_publications: {
-            fields: ['*']
-          }
+          cover_image: { fields: ['*'] },
+          related_publications: { fields: ['*'] },
+          related_patents: { fields: ['*'] }
         }
       }) as unknown as { data: any[] };
       
@@ -357,16 +337,81 @@ export const publicationApi = {
   }
 };
 
+// 招聘岗位相关 API
+export const openingApi = {
+  async getOpeningList(page = 1, pageSize = 100): Promise<ApiResponse<OpeningViewModel[]>> {
+    try {
+      const openingCollection = client.collection('openings');
+      const response = await openingCollection.find({
+        pagination: { page, pageSize },
+        sort: ['order:asc', 'createdAt:desc'],
+        populate: {
+          research_areas: { fields: ['*'] }
+        }
+      }) as unknown as { data: any[]; meta: { pagination?: any } };
+      return {
+        data: (response.data || []).map(transformOpening),
+        pagination: response.meta?.pagination
+      };
+    } catch (error) {
+      console.error('获取岗位列表失败:', error);
+      throw error;
+    }
+  },
+
+  async getOpeningBySlug(slug: string): Promise<OpeningViewModel> {
+    try {
+      const openingCollection = client.collection('openings');
+      const response = await openingCollection.find({
+        filters: { slug: { $eq: slug } },
+        populate: {
+          research_areas: { fields: ['*'] }
+        }
+      }) as unknown as { data: any[] };
+      if (response.data && response.data.length > 0) {
+        return transformOpening(response.data[0]);
+      }
+      throw new Error(`未找到 slug 为 ${slug} 的岗位`);
+    } catch (error) {
+      console.error('获取岗位详情失败:', error);
+      throw error;
+    }
+  }
+};
+
+// 专利相关 API
+export const patentsApi = {
+  async getPatentList(page = 1, pageSize = 100): Promise<ApiResponse<PatentViewModel[]>> {
+    try {
+      const patentCollection = client.collection('patents');
+      const response = await patentCollection.find({
+        pagination: { page, pageSize },
+        sort: ['year:desc', 'createdAt:desc'],
+        populate: {
+          research_areas: { fields: ['*'] }
+        }
+      }) as unknown as { data: any[]; meta: { pagination?: any } };
+      return {
+        data: (response.data || []).map(transformPatent),
+        pagination: response.meta?.pagination
+      };
+    } catch (error) {
+      console.error('获取专利列表失败:', error);
+      throw error;
+    }
+  }
+};
+
 // 联系页面相关 API
 export const contactApi = {
   // 获取联系页面内容
   async getContactPage(): Promise<ContactPageViewModel> {
     try {
-      const contactCollection = client.collection('contact-page');
-      const response = await contactCollection.find({}) as unknown as { data: StrapiData<any>[]; meta: { pagination?: any } };
+      const contactSingle = client.single('contact-page');
+      const response = await contactSingle.find({}) as unknown as any;
       
-      if (response.data && response.data.length > 0) {
-        return transformPageData(response.data[0], 'contact') as ContactPageViewModel;
+      if (response.data) {
+        return transformPageData(response.data, 'contact') as ContactPageViewModel;
       }
       
       throw new Error('未找到联系页面内容');
@@ -396,11 +441,11 @@ export const joinUsApi = {
   // 获取加入我们页面内容
   async getJoinUsPage(): Promise<JoinUsPageViewModel> {
     try {
-      const joinUsCollection = client.collection('join-us-page');
-      const response = await joinUsCollection.find({}) as unknown as { data: StrapiData<any>[]; meta: { pagination?: any } };
+      const joinUsSingle = client.single('join-us-page');
+      const response = await joinUsSingle.find({}) as unknown as any;
       
-      if (response.data && response.data.length > 0) {
-        return transformPageData(response.data[0], 'join-us') as JoinUsPageViewModel;
+      if (response.data) {
+        return transformPageData(response.data, 'join-us') as JoinUsPageViewModel;
       }
       
       throw new Error('未找到加入我们页面内容');
@@ -416,11 +461,11 @@ export const patentApi = {
   // 获取专利页面内容
   async getPatentPage(): Promise<PatentPageViewModel> {
     try {
-      const patentCollection = client.collection('patent-page');
-      const response = await patentCollection.find({}) as unknown as { data: StrapiData<any>[]; meta: { pagination?: any } };
+      const patentSingle = client.single('patent-page');
+      const response = await patentSingle.find({}) as unknown as any;
       
-      if (response.data && response.data.length > 0) {
-        return transformPageData(response.data[0], 'patent') as PatentPageViewModel;
+      if (response.data) {
+        return transformPageData(response.data, 'patent') as PatentPageViewModel;
       }
       
       throw new Error('未找到专利页面内容');
@@ -436,11 +481,11 @@ export const recruitApi = {
   // 获取招聘页面内容
   async getRecruitPage(): Promise<RecruitPageViewModel> {
     try {
-      const recruitCollection = client.collection('recruit-page');
-      const response = await recruitCollection.find({}) as unknown as { data: StrapiData<any>[]; meta: { pagination?: any } };
+      const recruitSingle = client.single('recruit-page');
+      const response = await recruitSingle.find({}) as unknown as any;
       
-      if (response.data && response.data.length > 0) {
-        return transformPageData(response.data[0], 'recruit') as RecruitPageViewModel;
+      if (response.data) {
+        return transformPageData(response.data, 'recruit') as RecruitPageViewModel;
       }
       
       throw new Error('未找到招聘页面内容');
@@ -460,6 +505,8 @@ export type {
   NewsViewModel,
   MemberViewModel,
   PublicationViewModel,
+  OpeningViewModel,
+  PatentViewModel,
   ResearchPageViewModel,
   ContactPageViewModel,
   JoinUsPageViewModel,

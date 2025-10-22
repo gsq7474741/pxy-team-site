@@ -28,9 +28,6 @@ export default async function NewsPage() {
     <div className="max-w-screen-xl mx-auto px-4 md:px-6 py-12">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold tracking-tight">新闻动态</h1>
-        <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-          了解我们课题组的最新研究成果、学术活动和重要公告。
-        </p>
       </div>
 
       {news.length > 0 ? (

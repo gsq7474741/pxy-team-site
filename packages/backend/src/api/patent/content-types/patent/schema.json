@@ -1,0 +1,68 @@
+{
+  "kind": "collectionType",
+  "collectionName": "patents",
+  "info": {
+    "singularName": "patent",
+    "pluralName": "patents",
+    "displayName": "Patent",
+    "description": "专利信息"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
+    "inventors": {
+      "type": "text",
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
+    "application_number": {
+      "type": "string",
+      "pluginOptions": { "i18n": { "localized": false } }
+    },
+    "publication_number": {
+      "type": "string",
+      "pluginOptions": { "i18n": { "localized": false } }
+    },
+    "grant_number": {
+      "type": "string",
+      "pluginOptions": { "i18n": { "localized": false } }
+    },
+    "year": {
+      "type": "integer",
+      "pluginOptions": { "i18n": { "localized": false } }
+    },
+    "status_field": {
+      "type": "enumeration",
+      "enum": ["Pending", "Granted", "Expired"],
+      "default": "Pending",
+      "pluginOptions": { "i18n": { "localized": false } }
+    },
+    "pdf_file": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["files"],
+      "pluginOptions": { "i18n": { "localized": false } }
+    },
+    "link": {
+      "type": "string",
+      "pluginOptions": { "i18n": { "localized": false } }
+    },
+    "research_areas": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::research-area.research-area",
+      "inversedBy": "related_patents"
+    }
+  }
+}

@@ -132,18 +132,18 @@ export default async function ResearchAreaDetailPage({ params }: ResearchAreaDet
                         </div>
                         <div className="flex items-center gap-1">
                           <FileText className="h-4 w-4" />
-                          {publication.journal}
+                          {publication.publicationVenue}
                         </div>
-                        {publication.type && (
+                        {publication.publicationType && (
                           <Badge variant="outline" className="text-xs">
-                            {publication.type}
+                            {publication.publicationType}
                           </Badge>
                         )}
                       </div>
                     </div>
-                    {publication.doi && (
+                    {publication.doiLink && (
                       <Button asChild variant="outline" size="sm" className="gap-2">
-                        <Link href={publication.doi} target="_blank" rel="noopener noreferrer">
+                        <Link href={publication.doiLink} target="_blank" rel="noopener noreferrer">
                           <ExternalLink className="h-4 w-4" />
                           查看论文
                         </Link>

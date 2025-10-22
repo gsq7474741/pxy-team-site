@@ -3,7 +3,11 @@ import Link from "next/link";
 import { memberApi, type MemberViewModel } from "@/lib/strapi-client";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 
-export default async function MembersPage() {
+interface MembersPageProps {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+}
+
+export default async function MembersPage({ searchParams }: MembersPageProps) {
   // 获取成员数据
   let members: MemberViewModel[] = [];
   try {
@@ -13,18 +17,41 @@ export default async function MembersPage() {
     console.error("获取成员数据失败:", error);
   }
 
+  const sp = (await (searchParams ?? Promise.resolve({}))) as Record<string, string | string[] | undefined>;
+  const activeRole = typeof sp.role === 'string' ? sp.role : 'all';
+  const roles = Array.from(new Set((members || []).map(m => m.role).filter(Boolean)));
+  const tabs = ['all', ...roles];
+  const filteredMembers = activeRole === 'all' ? members : members.filter(m => m.role === activeRole);
+
   return (
     <div className="max-w-screen-xl mx-auto px-4 md:px-6 py-12">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold tracking-tight">团队成员</h1>
-        <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-          我们的团队由一群充满激情和才华的研究人员组成，致力于推动科学技术的发展。
-        </p>
       </div>
 
-      {members.length > 0 ? (
+      <div className="mb-8 overflow-x-auto">
+        <div className="flex gap-2 border-b">
+          {tabs.map((r) => {
+            const isActive = activeRole === r;
+            const href = r === 'all' ? '/members' : `/members?role=${encodeURIComponent(r)}`;
+            const label = r === 'all' ? '全部' : r;
+            return (
+              <Link
+                key={r}
+                href={href}
+                className={`px-4 py-2 text-sm whitespace-nowrap border-b-2 ${isActive ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+                aria-current={isActive ? 'page' : undefined}
+              >
+                {label}
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+
+      {filteredMembers.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {members.map((member) => {
+          {filteredMembers.map((member) => {
             return (
               <Card key={member.id} className="overflow-hidden">
                 <CardHeader className="p-0">

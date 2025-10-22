@@ -1,8 +1,19 @@
-"use client";
-
 import Link from "next/link";
+import { contactApi, researchApi, type ContactPageViewModel, type ResearchAreaViewModel } from "@/lib/strapi-client";
 
-export default function Footer() {
+export default async function Footer() {
+  let contact: ContactPageViewModel | null = null;
+  let researchAreas: ResearchAreaViewModel[] = [];
+  try {
+    const [contactRes, researchRes] = await Promise.all([
+      contactApi.getContactPage(),
+      researchApi.getResearchAreaList(1, 100)
+    ]);
+    contact = contactRes;
+    researchAreas = researchRes.data || [];
+  } catch (error) {
+    console.error("获取页脚数据失败:", error);
+  }
   return (
     <footer className="border-t bg-muted/40">
       <div className="max-w-screen-xl mx-auto px-4 md:px-6 py-8 md:py-12">
@@ -34,7 +45,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/publications" className="text-sm text-muted-foreground hover:text-primary">
-                  论文成果
+                  成果概览
                 </Link>
               </li>
             </ul>
@@ -43,18 +54,21 @@ export default function Footer() {
           <div className="space-y-3">
             <h3 className="text-lg font-semibold">研究领域</h3>
             <ul className="space-y-2">
-              <li className="text-sm text-muted-foreground">人工智能</li>
-              <li className="text-sm text-muted-foreground">机器学习</li>
-              <li className="text-sm text-muted-foreground">数据科学</li>
-              <li className="text-sm text-muted-foreground">计算机视觉</li>
+              {(researchAreas || []).sort((a, b) => (a.order ?? 0) - (b.order ?? 0)).slice(0, 4).map((area) => (
+                <li key={area.id}>
+                  <Link href={`/research/${area.slug}`} className="text-sm text-muted-foreground hover:text-primary">
+                    {area.title}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
           
           <div className="space-y-3">
             <h3 className="text-lg font-semibold">联系方式</h3>
             <address className="not-italic">
-              <p className="text-sm text-muted-foreground">地址：[课题组详细地址]</p>
-              <p className="text-sm text-muted-foreground">邮箱：[联系邮箱]</p>
+              <p className="text-sm text-muted-foreground">地址：{contact?.address || '—'}</p>
+              <p className="text-sm text-muted-foreground">邮箱：{contact?.email || '—'}</p>
             </address>
           </div>
         </div>

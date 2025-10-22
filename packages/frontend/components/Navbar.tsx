@@ -11,7 +11,7 @@ const navItems = [
   { name: "新闻动态", href: "/news" },
   { name: "研究方向", href: "/research" },
   { name: "团队成员", href: "/members" },
-  { name: "论文成果", href: "/publications" },
+  { name: "成果概览", href: "/publications" },
   { name: "加入我们", href: "/join" },
   { name: "联系我们", href: "/contact" },
 ];

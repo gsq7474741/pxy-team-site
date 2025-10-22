@@ -97,6 +97,12 @@
       "target": "api::publication.publication",
       "mappedBy": "research_areas"
     },
+    "related_patents": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::patent.patent",
+      "mappedBy": "research_areas"
+    },
     "keywords": {
       "type": "json",
       "pluginOptions": {

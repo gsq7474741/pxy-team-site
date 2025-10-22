@@ -11,6 +11,8 @@ import {
   NewsViewModel,
   MemberViewModel,
   PublicationViewModel,
+  OpeningViewModel,
+  PatentViewModel,
   ResearchPageViewModel,
   ContactPageViewModel,
   JoinUsPageViewModel,
@@ -35,6 +37,74 @@ export const getStrapiMedia = (url: string | null): string | null => {
   const result = `${baseUrl}${url}`;
   console.log('getStrapiMedia 输出 URL:', result);
   return result;
+};
+
+// 招聘岗位数据转换器
+export const transformOpening = (strapiOpening: any): OpeningViewModel => {
+  let id, data;
+  if (strapiOpening.data) {
+    id = strapiOpening.data.documentId || strapiOpening.data.id;
+    data = strapiOpening.data.attributes || strapiOpening.data;
+  } else {
+    id = strapiOpening.documentId || strapiOpening.id;
+    data = strapiOpening.attributes || strapiOpening;
+  }
+
+  const toTextArray = (items: any): string[] => {
+    if (!items) return [];
+    const arr = items?.map?.((it: any) => {
+      const a = it?.text || it?.attributes?.text || it;
+      return typeof a === 'string' ? a : '';
+    }) || [];
+    return arr.filter(Boolean);
+  };
+
+  return {
+    id: id?.toString() || '',
+    title: data?.title || '',
+    slug: data?.slug || '',
+    positionType: data?.position_type || 'Other',
+    description: data?.description || '',
+    requirements: toTextArray(data?.requirements),
+    benefits: toTextArray(data?.benefits),
+    location: data?.location,
+    deadlineDate: data?.deadline_date,
+    contactEmail: data?.contact_email,
+    applyLink: data?.apply_link,
+    order: data?.order,
+    status: data?.status_field || data?.status,
+    researchAreas: data?.research_areas?.data?.map((area: any) => transformResearchArea(area)) || [],
+    createdAt: data?.createdAt || strapiOpening?.createdAt || '',
+    updatedAt: data?.updatedAt || strapiOpening?.updatedAt || ''
+  };
+};
+
+// 专利数据转换器
+export const transformPatent = (strapiPatent: any): PatentViewModel => {
+  let id, data;
+  if (strapiPatent.data) {
+    id = strapiPatent.data.documentId || strapiPatent.data.id;
+    data = strapiPatent.data.attributes || strapiPatent.data;
+  } else {
+    id = strapiPatent.documentId || strapiPatent.id;
+    data = strapiPatent.attributes || strapiPatent;
+  }
+
+  return {
+    id: id?.toString() || '',
+    title: data?.title || '',
+    inventors: data?.inventors,
+    applicationNumber: data?.application_number,
+    publicationNumber: data?.publication_number,
+    grantNumber: data?.grant_number,
+    year: data?.year?.toString(),
+    status: data?.status_field || data?.status,
+    pdfFile: transformMediaFile(data?.pdf_file),
+    link: data?.link,
+    researchAreas: data?.research_areas?.data?.map((area: any) => transformResearchArea(area)) || [],
+    createdAt: data?.createdAt || strapiPatent?.createdAt || '',
+    updatedAt: data?.updatedAt || strapiPatent?.updatedAt || ''
+  };
 };
 
 // 转换 Strapi 媒体对象为统一格式
@@ -222,33 +292,25 @@ export const transformPageData = (strapiData: any, type: 'research' | 'contact' 
 
   switch (type) {
     case 'research':
-      return {
-        ...baseData,
-        coverImage: transformMediaFile(data.cover_image || data.coverImage)
-      } as ResearchPageViewModel;
+      return baseData as ResearchPageViewModel;
     
     case 'contact':
       return {
         ...baseData,
         address: data.address || '',
         email: data.email || '',
-        phone: data.phone || ''
+        phone: data.phone_number || data.phone || '',
+        mapEmbedCode: data.map_embed_code
       } as ContactPageViewModel;
     
     case 'join-us':
       return baseData as JoinUsPageViewModel;
     
     case 'patent':
-      return {
-        ...baseData,
-        patents: data.patents || ''
-      } as PatentPageViewModel;
+      return baseData as PatentPageViewModel;
     
     case 'recruit':
-      return {
-        ...baseData,
-        positions: data.positions || ''
-      } as RecruitPageViewModel;
+      return baseData as RecruitPageViewModel;
     
     default:
       return baseData as any;
@@ -266,6 +328,14 @@ export const transformMemberList = (strapiMemberList: any[]): MemberViewModel[] 
 
 export const transformPublicationList = (strapiPublicationList: any[]): PublicationViewModel[] => {
   return strapiPublicationList.map(transformPublication);
+};
+
+export const transformOpeningList = (strapiOpeningList: any[]): OpeningViewModel[] => {
+  return strapiOpeningList.map(transformOpening);
+};
+
+export const transformPatentList = (strapiPatentList: any[]): PatentViewModel[] => {
+  return strapiPatentList.map(transformPatent);
 };
 
 // 研究方向数据转换器
@@ -296,6 +366,7 @@ export const transformResearchArea = (strapiResearchArea: any): ResearchAreaView
     detailedContent: data?.detailed_content || '',
     researchHighlights: data?.research_highlights || [],
     relatedPublications: data?.related_publications?.data?.map(transformPublication) || [],
+    relatedPatents: data?.related_patents?.data?.map(transformPatent) || [],
     keywords: data?.keywords || [],
     createdAt: data?.createdAt || strapiResearchArea?.createdAt || '',
     updatedAt: data?.updatedAt || strapiResearchArea?.updatedAt || ''

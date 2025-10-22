@@ -14,10 +14,21 @@ export interface ContentHighlight extends Struct.ComponentSchema {
   };
 }
 
+export interface ContentListItem extends Struct.ComponentSchema {
+  collectionName: 'components_content_list_items';
+  info: {
+    displayName: 'List Item';
+  };
+  attributes: {
+    text: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
       'content.highlight': ContentHighlight;
+      'content.list-item': ContentListItem;
     }
   }
 }

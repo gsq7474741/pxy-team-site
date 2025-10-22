@@ -626,6 +626,122 @@ export interface ApiNewsNews extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiOpeningOpening extends Struct.CollectionTypeSchema {
+  collectionName: 'openings';
+  info: {
+    description: '\u62DB\u8058\u5C97\u4F4D';
+    displayName: 'Opening';
+    pluralName: 'openings';
+    singularName: 'opening';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    apply_link: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: false;
+        };
+      }>;
+    benefits: Schema.Attribute.Component<'content.list-item', true> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    contact_email: Schema.Attribute.Email &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: false;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    deadline_date: Schema.Attribute.Date &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: false;
+        };
+      }>;
+    description: Schema.Attribute.RichText &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::opening.opening'
+    >;
+    location: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    order: Schema.Attribute.Integer &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: false;
+        };
+      }> &
+      Schema.Attribute.DefaultTo<0>;
+    position_type: Schema.Attribute.Enumeration<
+      ['Postdoc', 'PhD', 'Master', 'RA', 'Intern', 'Engineer', 'Other']
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: false;
+        };
+      }> &
+      Schema.Attribute.DefaultTo<'Other'>;
+    publishedAt: Schema.Attribute.DateTime;
+    requirements: Schema.Attribute.Component<'content.list-item', true> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    research_areas: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::research-area.research-area'
+    >;
+    slug: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: false;
+        };
+      }>;
+    status_field: Schema.Attribute.Enumeration<['Open', 'Closed']> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: false;
+        };
+      }> &
+      Schema.Attribute.DefaultTo<'Open'>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiPatentPagePatentPage extends Struct.SingleTypeSchema {
   collectionName: 'patent_page';
   info: {
@@ -661,6 +777,97 @@ export interface ApiPatentPagePatentPage extends Struct.SingleTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+  };
+}
+
+export interface ApiPatentPatent extends Struct.CollectionTypeSchema {
+  collectionName: 'patents';
+  info: {
+    description: '\u4E13\u5229\u4FE1\u606F';
+    displayName: 'Patent';
+    pluralName: 'patents';
+    singularName: 'patent';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    application_number: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: false;
+        };
+      }>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    grant_number: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: false;
+        };
+      }>;
+    inventors: Schema.Attribute.Text &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    link: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: false;
+        };
+      }>;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::patent.patent'>;
+    pdf_file: Schema.Attribute.Media<'files'> &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: false;
+        };
+      }>;
+    publication_number: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: false;
+        };
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    research_areas: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::research-area.research-area'
+    >;
+    status_field: Schema.Attribute.Enumeration<
+      ['Pending', 'Granted', 'Expired']
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: false;
+        };
+      }> &
+      Schema.Attribute.DefaultTo<'Pending'>;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    year: Schema.Attribute.Integer &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: false;
+        };
+      }>;
   };
 }
 
@@ -866,6 +1073,10 @@ export interface ApiResearchAreaResearchArea
       }> &
       Schema.Attribute.DefaultTo<0>;
     publishedAt: Schema.Attribute.DateTime;
+    related_patents: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::patent.patent'
+    >;
     related_publications: Schema.Attribute.Relation<
       'manyToMany',
       'api::publication.publication'
@@ -1448,7 +1659,9 @@ declare module '@strapi/strapi' {
       'api::join-us-page.join-us-page': ApiJoinUsPageJoinUsPage;
       'api::member.member': ApiMemberMember;
       'api::news.news': ApiNewsNews;
+      'api::opening.opening': ApiOpeningOpening;
       'api::patent-page.patent-page': ApiPatentPagePatentPage;
+      'api::patent.patent': ApiPatentPatent;
       'api::publication.publication': ApiPublicationPublication;
       'api::recruit-page.recruit-page': ApiRecruitPageRecruitPage;
       'api::research-area.research-area': ApiResearchAreaResearchArea;

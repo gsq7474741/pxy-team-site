@@ -86,46 +86,84 @@ export interface PublicationViewModel {
 
 export interface ResearchPageViewModel {
   id: string;
-  title: string;
-  content: string;
+  title?: string;
+  content?: string;
   coverImage?: MediaFile;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface ContactPageViewModel {
   id: string;
-  title: string;
-  content: string;
-  address: string;
-  email: string;
-  phone: string;
-  createdAt: string;
-  updatedAt: string;
+  title?: string;
+  content?: string;
+  address?: string;
+  email?: string;
+  phone?: string;
+  mapEmbedCode?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface JoinUsPageViewModel {
   id: string;
-  title: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
+  title?: string;
+  content?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface PatentPageViewModel {
   id: string;
-  title: string;
-  content: string;
-  patents: string;
-  createdAt: string;
-  updatedAt: string;
+  title?: string;
+  content?: string;
+  patents?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface RecruitPageViewModel {
   id: string;
+  title?: string;
+  content?: string;
+  positions?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+// 招聘岗位（结构化数据）
+export interface OpeningViewModel {
+  id: string;
   title: string;
-  content: string;
-  positions: string;
+  slug: string;
+  positionType: 'Postdoc' | 'PhD' | 'Master' | 'RA' | 'Intern' | 'Engineer' | 'Other';
+  description?: string;
+  requirements?: string[];
+  benefits?: string[];
+  location?: string;
+  deadlineDate?: string;
+  contactEmail?: string;
+  applyLink?: string;
+  order?: number;
+  status?: 'Open' | 'Closed';
+  researchAreas?: ResearchAreaViewModel[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+// 专利（结构化数据）
+export interface PatentViewModel {
+  id: string;
+  title: string;
+  inventors?: string;
+  applicationNumber?: string;
+  publicationNumber?: string;
+  grantNumber?: string;
+  year?: string;
+  status?: 'Pending' | 'Granted' | 'Expired';
+  pdfFile?: MediaFile;
+  link?: string;
+  researchAreas?: ResearchAreaViewModel[];
   createdAt: string;
   updatedAt: string;
 }
@@ -150,6 +188,7 @@ export interface ResearchAreaViewModel {
   detailedContent?: string;
   researchHighlights?: ResearchHighlight[];
   relatedPublications?: PublicationViewModel[];
+  relatedPatents?: PatentViewModel[];
   keywords?: string[];
   createdAt: string;
   updatedAt: string;
