@@ -15,7 +15,7 @@ import {
   PublicationViewModel,
   OpeningViewModel,
   PatentViewModel,
-  ResearchPageViewModel,
+  AwardViewModel,
   ContactPageViewModel,
   JoinUsPageViewModel,
   PatentPageViewModel,
@@ -29,10 +29,12 @@ import {
   transformPublication,
   transformOpening,
   transformPatent,
+  transformAward,
   transformPageData,
   transformNewsList,
   transformMemberList,
   transformPublicationList,
+  transformAwardList,
   transformResearchArea,
   transformResearchAreaList
 } from './transformers';
@@ -44,10 +46,6 @@ const client = strapi({
 });
 
 // 调试信息
-console.log('Strapi 客户端配置:', {
-  baseURL: process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337/api',
-  env: process.env.NODE_ENV
-});
 
 export default client;
 
@@ -62,14 +60,11 @@ export const newsApi = {
   // 获取新闻列表
   async getNewsList(page = 1, pageSize = 10): Promise<ApiResponse<NewsViewModel[]>> {
     try {
-      console.log(`正在获取新闻列表 - 页码: ${page}, 每页: ${pageSize}`);
-      
       // 尝试不同的 collection 名称
       let newsCollection;
       try {
         newsCollection = client.collection('news-items');
       } catch (e) {
-        console.log('尝试使用 news collection');
         newsCollection = client.collection('news');
       }
       
@@ -82,14 +77,11 @@ export const newsApi = {
         populate: ['cover_image'],
       }) as unknown as { data: any[]; meta: { pagination?: any } };
       
-      console.log('新闻列表 API 响应:', response);
-      
       if (!response || !response.data) {
         throw new Error('API 响应格式不正确');
       }
       
       const transformedData = transformNewsList(response.data);
-      console.log('转换后的新闻列表:', transformedData);
       
       return {
         data: transformedData,
@@ -97,10 +89,6 @@ export const newsApi = {
       };
     } catch (error) {
       console.error('获取新闻列表失败:', error);
-      console.error('错误详情:', {
-        message: error instanceof Error ? error.message : '未知错误',
-        stack: error instanceof Error ? error.stack : undefined
-      });
       throw error;
     }
   },
@@ -108,19 +96,15 @@ export const newsApi = {
   // 获取新闻详情
   async getNewsById(id: string): Promise<NewsViewModel> {
     try {
-      console.log(`正在获取新闻详情 - ID: ${id}`);
-      
       // 尝试不同的 collection 名称
       let newsCollection;
       try {
         newsCollection = client.collection('news-items');
       } catch (e) {
-        console.log('尝试使用 news collection');
         newsCollection = client.collection('news');
       }
       
       // 尝试多种 populate 语法
-      console.log('尝试获取数据，包含封面图片...');
       
       let response;
       try {
@@ -132,22 +116,17 @@ export const newsApi = {
             }
           },
         }) as unknown as any;
-        console.log('方法1 (深度 populate) API 响应:', response);
       } catch (e1) {
-        console.log('方法1失败，尝试方法2...');
         try {
           // 方法2：使用通配符
           response = await newsCollection.findOne(id, {
             populate: '*',
           }) as unknown as any;
-          console.log('方法2 (通配符) API 响应:', response);
         } catch (e2) {
-          console.log('方法2失败，尝试方法3...');
           // 方法3：使用数组语法
           response = await newsCollection.findOne(id, {
             populate: ['cover_image'],
           }) as unknown as any;
-          console.log('方法3 (通配符) API 响应:', response);
         }
       }
       
@@ -155,45 +134,14 @@ export const newsApi = {
         throw new Error(`未找到 ID 为 ${id} 的新闻`);
       }
       
-      // 详细检查响应数据结构
-      console.log('响应数据详细结构:');
-      console.log('- response.data:', response.data);
-      if (response.data) {
-        console.log('- response.data.cover_image:', response.data.cover_image);
-        console.log('- response.data.attributes:', response.data.attributes);
-        if (response.data.attributes) {
-          console.log('- response.data.attributes.cover_image:', response.data.attributes.cover_image);
-        }
-      }
-      
       const transformed = transformNews(response);
-      console.log('转换后的新闻详情:', transformed);
       
       return transformed;
     } catch (error) {
       console.error(`获取新闻详情失败 (ID: ${id}):`, error);
-      console.error('错误详情:', {
-        message: error instanceof Error ? error.message : '未知错误',
-        stack: error instanceof Error ? error.stack : undefined
-      });
       throw error;
     }
   },
-
-  // 测试 API 连接
-  async testConnection(): Promise<boolean> {
-    try {
-      console.log('测试 Strapi API 连接...');
-      
-      // 尝试获取新闻列表的第一页来测试连接
-      const response = await this.getNewsList(1, 1);
-      console.log('API 连接测试成功:', response);
-      return true;
-    } catch (error) {
-      console.error('API 连接测试失败:', error);
-      return false;
-    }
-  }
 };
 
 // 团队成员相关 API
@@ -246,6 +194,29 @@ export const memberApi = {
   }
 };
 
+// 竞赛奖项相关 API
+export const awardsApi = {
+  async getAwardList(page = 1, pageSize = 100): Promise<ApiResponse<AwardViewModel[]>> {
+    try {
+      const awardCollection = client.collection('awards');
+      const response = await awardCollection.find({
+        pagination: { page, pageSize },
+        sort: ['year:desc', 'createdAt:desc'],
+        populate: {
+          research_areas: { fields: ['*'] }
+        }
+      }) as unknown as { data: any[]; meta: { pagination?: any } };
+      return {
+        data: (response.data || []).map(transformAward),
+        pagination: response.meta?.pagination
+      };
+    } catch (error) {
+      console.error('获取竞赛奖项列表失败:', error);
+      throw error;
+    }
+  }
+};
+
 // 研究方向相关 API
 export const researchApi = {
 
@@ -253,11 +224,14 @@ export const researchApi = {
   async getResearchAreaList(page = 1, pageSize = 100): Promise<ApiResponse<ResearchAreaViewModel[]>> {
     try {
       const researchAreaCollection = client.collection('research-areas');
+      const locale = process.env.NEXT_PUBLIC_STRAPI_LOCALE || 'zh-Hans';
       const response = await researchAreaCollection.find({
+        locale,
         populate: {
           cover_image: { fields: ['*'] },
-          related_publications: { fields: ['*'] },
-          related_patents: { fields: ['*'] }
+          related_publications: { populate: '*' },
+          related_patents: { populate: '*' },
+          related_awards: { populate: '*' }
         },
         sort: ['order:asc', 'createdAt:desc'],
         pagination: {
@@ -287,7 +261,9 @@ export const researchApi = {
   async getResearchAreaBySlug(slug: string): Promise<ResearchAreaViewModel> {
     try {
       const researchAreaCollection = client.collection('research-areas');
+      const locale = process.env.NEXT_PUBLIC_STRAPI_LOCALE || 'zh-Hans';
       const response = await researchAreaCollection.find({
+        locale,
         filters: {
           slug: {
             $eq: slug
@@ -295,8 +271,9 @@ export const researchApi = {
         },
         populate: {
           cover_image: { fields: ['*'] },
-          related_publications: { fields: ['*'] },
-          related_patents: { fields: ['*'] }
+          related_publications: { populate: '*' },
+          related_patents: { populate: '*' },
+          related_awards: { populate: '*' }
         }
       }) as unknown as { data: any[] };
       
@@ -507,7 +484,7 @@ export type {
   PublicationViewModel,
   OpeningViewModel,
   PatentViewModel,
-  ResearchPageViewModel,
+  AwardViewModel,
   ContactPageViewModel,
   JoinUsPageViewModel,
   PatentPageViewModel,

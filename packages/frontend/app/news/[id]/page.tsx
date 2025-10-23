@@ -5,11 +5,23 @@ import Link from "next/link";
 import { newsApi, formatDate, type NewsViewModel } from "@/lib/strapi-client";
 import ShareButtons from "@/components/ShareButtons";
 
+export const revalidate = 300;
+
 // 定义页面参数类型
 interface NewsDetailPageProps {
   params: Promise<{
     id: string;
   }>;
+}
+
+// 构建期生成静态路径
+export async function generateStaticParams() {
+  try {
+    const res = await newsApi.getNewsList(1, 1000);
+    return (res.data || []).map((n) => ({ id: String(n.id) }));
+  } catch (e) {
+    return [];
+  }
 }
 
 export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
@@ -20,16 +32,12 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
   let newsDetail: NewsViewModel | null = null;
   
   try {
-    console.log('正在获取新闻详情，ID:', id);
     newsDetail = await newsApi.getNewsById(id);
-    console.log('获取到的新闻详情:', newsDetail);
   } catch (error) {
-    console.error("获取新闻详情失败:", error);
     return notFound();
   }
   
   if (!newsDetail) {
-    console.log('新闻详情为空，返回 404');
     return notFound();
   }
 

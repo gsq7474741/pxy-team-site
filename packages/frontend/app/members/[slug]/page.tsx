@@ -6,13 +6,23 @@ import { memberApi, getStrapiMedia, type MemberViewModel } from "@/lib/strapi-cl
 
 // 成员详情页面参数类型
 interface MemberPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
+}
+
+// 构建期生成静态路径
+export async function generateStaticParams() {
+  try {
+    const res = await memberApi.getMemberList(1, 1000);
+    return (res.data || []).map((m) => ({ slug: m.slug }));
+  } catch (e) {
+    return [];
+  }
 }
 
 export default async function MemberDetailPage({ params }: MemberPageProps) {
-  const { slug } = params;
+  const { slug } = await params;
   let member: MemberViewModel | null = null;
 
   try {

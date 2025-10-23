@@ -1,23 +1,26 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { researchApi, publicationApi, type ResearchAreaViewModel } from "@/lib/strapi-client";
+import { researchApi, type ResearchAreaViewModel } from "@/lib/strapi-client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, ExternalLink, FileText, Calendar } from "lucide-react";
+import { ArrowLeft, ExternalLink, FileText, Calendar, Trophy } from "lucide-react";
+
+export const revalidate = 300;
 
 interface ResearchAreaDetailPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export default async function ResearchAreaDetailPage({ params }: ResearchAreaDetailPageProps) {
   let researchArea: ResearchAreaViewModel;
 
   try {
-    researchArea = await researchApi.getResearchAreaBySlug(params.slug);
+    const { slug } = await params;
+    researchArea = await researchApi.getResearchAreaBySlug(slug);
   } catch (error) {
     console.error("获取研究方向详情失败:", error);
     notFound();
@@ -117,43 +120,136 @@ export default async function ResearchAreaDetailPage({ params }: ResearchAreaDet
       {researchArea.relatedPublications && researchArea.relatedPublications.length > 0 && (
         <div className="mb-12">
           <h2 className="text-3xl font-bold tracking-tight mb-6">相关论文</h2>
-          <div className="space-y-6">
+          <ul className="rounded-lg border divide-y">
             {researchArea.relatedPublications.map((publication) => (
-              <Card key={publication.id} className="transition-all hover:shadow-md">
-                <CardContent className="pt-6">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold mb-2">{publication.title}</h3>
-                      <p className="text-muted-foreground mb-2">{publication.authors}</p>
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-1">
-                          <Calendar className="h-4 w-4" />
-                          {publication.year}
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <FileText className="h-4 w-4" />
-                          {publication.publicationVenue}
-                        </div>
-                        {publication.publicationType && (
-                          <Badge variant="outline" className="text-xs">
-                            {publication.publicationType}
-                          </Badge>
-                        )}
-                      </div>
+              <li key={publication.id} className="flex items-start justify-between gap-4 p-5 hover:bg-muted/40">
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold mb-2">{publication.title}</h3>
+                  <p className="text-muted-foreground mb-2">{publication.authors}</p>
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <Calendar className="h-4 w-4" />
+                      {publication.year}
                     </div>
-                    {publication.doiLink && (
-                      <Button asChild variant="outline" size="sm" className="gap-2">
-                        <Link href={publication.doiLink} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="h-4 w-4" />
-                          查看论文
-                        </Link>
-                      </Button>
+                    <div className="flex items-center gap-1">
+                      <FileText className="h-4 w-4" />
+                      {publication.publicationVenue}
+                    </div>
+                    {publication.publicationType && (
+                      <Badge variant="outline" className="text-xs">
+                        {publication.publicationType}
+                      </Badge>
                     )}
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+                <div className="flex gap-2">
+                  {publication.doiLink && (
+                    <Button asChild variant="outline" size="sm" className="gap-2">
+                      <Link href={publication.doiLink} target="_blank" rel="noopener noreferrer">
+                        <ExternalLink className="h-4 w-4" />
+                        查看论文
+                      </Link>
+                    </Button>
+                  )}
+                </div>
+              </li>
             ))}
-          </div>
+          </ul>
+        </div>
+      )}
+
+      {/* 相关专利 */}
+      {researchArea.relatedPatents && researchArea.relatedPatents.length > 0 && (
+        <div className="mb-12">
+          <h2 className="text-3xl font-bold tracking-tight mb-6">相关专利</h2>
+          <ul className="rounded-lg border divide-y">
+            {researchArea.relatedPatents.map((p) => (
+              <li key={p.id} className="flex items-start justify-between gap-4 p-5 hover:bg-muted/40">
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold mb-2">{p.title}</h3>
+                  {p.inventors && (
+                    <p className="text-muted-foreground mb-2">{p.inventors}</p>
+                  )}
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <Calendar className="h-4 w-4" />
+                      {p.year || '—'}
+                    </div>
+                    {p.status && (
+                      <Badge variant={p.status === 'Granted' ? 'default' : (p.status === 'Pending' ? 'secondary' : 'destructive')}>
+                        {p.status}
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  {p.pdfFile?.url && (
+                    <Button asChild variant="outline" size="sm" className="gap-2">
+                      <Link href={p.pdfFile.url} target="_blank" rel="noopener noreferrer">
+                        <FileText className="h-4 w-4" />
+                        下载PDF
+                      </Link>
+                    </Button>
+                  )}
+                  {p.link && (
+                    <Button asChild variant="outline" size="sm" className="gap-2">
+                      <Link href={p.link} target="_blank" rel="noopener noreferrer">
+                        <ExternalLink className="h-4 w-4" />
+                        外部链接
+                      </Link>
+                    </Button>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* 竞赛奖项 */}
+      {researchArea.relatedAwards && researchArea.relatedAwards.length > 0 && (
+        <div className="mb-12">
+          <h2 className="text-3xl font-bold tracking-tight mb-6">竞赛奖项</h2>
+          <ul className="rounded-lg border divide-y">
+            {researchArea.relatedAwards.map((a) => (
+              <li key={a.id} className="flex items-start justify-between gap-4 p-5 hover:bg-muted/40">
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold mb-2">{a.title}</h3>
+                  {(a.recipients || a.competitionName) && (
+                    <p className="text-muted-foreground mb-2">{[a.recipients, a.competitionName].filter(Boolean).join(' ｜ ')}</p>
+                  )}
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <Trophy className="h-4 w-4" />
+                      {a.awardRank || '—'}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Calendar className="h-4 w-4" />
+                      {a.year || '—'}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  {a.pdfFile?.url && (
+                    <Button asChild variant="outline" size="sm" className="gap-2">
+                      <Link href={a.pdfFile.url} target="_blank" rel="noopener noreferrer">
+                        <FileText className="h-4 w-4" />
+                        下载PDF
+                      </Link>
+                    </Button>
+                  )}
+                  {a.link && (
+                    <Button asChild variant="outline" size="sm" className="gap-2">
+                      <Link href={a.link} target="_blank" rel="noopener noreferrer">
+                        <ExternalLink className="h-4 w-4" />
+                        外部链接
+                      </Link>
+                    </Button>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 
@@ -201,7 +297,8 @@ export async function generateStaticParams() {
 // 生成页面元数据
 export async function generateMetadata({ params }: ResearchAreaDetailPageProps) {
   try {
-    const researchArea = await researchApi.getResearchAreaBySlug(params.slug);
+    const { slug } = await params;
+    const researchArea = await researchApi.getResearchAreaBySlug(slug);
     return {
       title: `${researchArea.title} - Prof. Peng 课题组`,
       description: researchArea.description,

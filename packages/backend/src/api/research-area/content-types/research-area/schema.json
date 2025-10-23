@@ -103,6 +103,12 @@
       "target": "api::patent.patent",
       "mappedBy": "research_areas"
     },
+    "related_awards": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::award.award",
+      "mappedBy": "research_areas"
+    },
     "keywords": {
       "type": "json",
       "pluginOptions": {

@@ -132,8 +132,11 @@ export default async function ContactPage() {
       {contactData?.mapEmbedCode && (
         <div className="mt-16">
           <h2 className="text-2xl font-bold mb-6 text-center">我们的位置</h2>
-          <div className="aspect-video rounded-lg overflow-hidden">
-            <div dangerouslySetInnerHTML={{ __html: contactData.mapEmbedCode }} />
+          <div className="h-[820px] rounded-lg overflow-hidden">
+            <div
+              className="h-full [&_iframe]:w-full [&_iframe]:h-full [&_iframe]:border-0 [&_iframe]:block"
+              dangerouslySetInnerHTML={{ __html: contactData.mapEmbedCode }}
+            />
           </div>
         </div>
       )}

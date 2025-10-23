@@ -1,0 +1,62 @@
+{
+  "kind": "collectionType",
+  "collectionName": "awards",
+  "info": {
+    "singularName": "award",
+    "pluralName": "awards",
+    "displayName": "Award",
+    "description": "竞赛奖项"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
+    "recipients": {
+      "type": "text",
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
+    "competition_name": {
+      "type": "string",
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
+    "award_rank": {
+      "type": "string",
+      "pluginOptions": { "i18n": { "localized": true } }
+    },
+    "year": {
+      "type": "integer",
+      "pluginOptions": { "i18n": { "localized": false } }
+    },
+    "date": {
+      "type": "date",
+      "pluginOptions": { "i18n": { "localized": false } }
+    },
+    "pdf_file": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["files"],
+      "pluginOptions": { "i18n": { "localized": false } }
+    },
+    "link": {
+      "type": "string",
+      "pluginOptions": { "i18n": { "localized": false } }
+    },
+    "research_areas": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::research-area.research-area",
+      "inversedBy": "related_awards"
+    }
+  }
+}

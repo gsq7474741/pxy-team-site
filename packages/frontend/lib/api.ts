@@ -15,7 +15,6 @@ export const getStrapiMedia = (url: string | null) => {
   const baseUrl = ('http://localhost:1337');
   // 移除环境变量中可能存在的 /api 后缀
   // const baseUrl = (process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337').replace(/\/api$/, '');
-  console.log('getStrapiMedia 拼接URL:', `${baseUrl}${url}`);
   return `${baseUrl}${url}`;
 };
 

@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { researchApi, newsApi, type ResearchAreaViewModel, type NewsViewModel, formatDate, stripHtmlTags, truncateText } from "@/lib/strapi-client";
 
+export const revalidate = 300;
+
 export default async function Home() {
   let researchAreas: ResearchAreaViewModel[] = [];
   let latestNews: NewsViewModel[] = [];

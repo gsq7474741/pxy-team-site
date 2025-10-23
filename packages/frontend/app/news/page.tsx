@@ -4,6 +4,8 @@ import { newsApi, getStrapiMedia, formatDate, stripHtmlTags, truncateText, type 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
+export const revalidate = 300;
+
 // 新闻列表页面
 
 export default async function NewsPage() {

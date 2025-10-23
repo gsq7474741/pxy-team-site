@@ -84,14 +84,7 @@ export interface PublicationViewModel {
   updatedAt: string;
 }
 
-export interface ResearchPageViewModel {
-  id: string;
-  title?: string;
-  content?: string;
-  coverImage?: MediaFile;
-  createdAt?: string;
-  updatedAt?: string;
-}
+ 
 
 export interface ContactPageViewModel {
   id: string;
@@ -168,6 +161,21 @@ export interface PatentViewModel {
   updatedAt: string;
 }
 
+export interface AwardViewModel {
+  id: string;
+  title: string;
+  recipients?: string;
+  competitionName?: string;
+  awardRank?: string;
+  year?: string;
+  date?: string;
+  pdfFile?: MediaFile;
+  link?: string;
+  researchAreas?: ResearchAreaViewModel[];
+  createdAt: string;
+  updatedAt: string;
+}
+
 // 研究亮点类型
 export interface ResearchHighlight {
   title: string;
@@ -189,6 +197,7 @@ export interface ResearchAreaViewModel {
   researchHighlights?: ResearchHighlight[];
   relatedPublications?: PublicationViewModel[];
   relatedPatents?: PatentViewModel[];
+  relatedAwards?: AwardViewModel[];
   keywords?: string[];
   createdAt: string;
   updatedAt: string;
