@@ -18,8 +18,8 @@ RUN corepack enable && \
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/backend/package.json packages/backend/package.json
 
-# 安装依赖（工作区）
-RUN pnpm install -w --frozen-lockfile
+# 安装依赖(工作区及所有包)
+RUN pnpm install
 
 # 复制后端源码并编译管理端（Admin）
 COPY packages/backend packages/backend

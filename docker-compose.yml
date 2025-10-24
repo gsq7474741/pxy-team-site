@@ -10,6 +10,7 @@ services:
       - ./packages/backend/.env
     environment:
       NODE_ENV: production
+      LOG_LEVEL: debug
     ports:
       - '1337:1337'
     volumes:
