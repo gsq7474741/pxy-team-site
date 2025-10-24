@@ -1,0 +1,9 @@
+{
+  "name": "strapi-provider-upload-custom-oss",
+  "version": "1.0.0",
+  "description": "Custom Aliyun OSS provider for Strapi upload",
+  "main": "index.js",
+  "strapi": {
+    "isProvider": true
+  }
+}
