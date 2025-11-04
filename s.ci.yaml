@@ -99,10 +99,6 @@ resources:
         routes:
           - path: /*
             functionName: ${vars.feFunctionName}
-      certConfig:
-        certName: pxy-frontend
-        certificate: oss://cn-chengdu/pxy-site-cert/fe/cert.pem
-        privateKey: oss://cn-chengdu/pxy-site-cert/fe/private.pem
 
   fc3_domain_be:
     component: fc3-domain
@@ -116,7 +112,3 @@ resources:
         routes:
           - path: /*
             functionName: ${vars.beFunctionName}
-      certConfig:
-        certName: pxy-backend
-        certificate: oss://cn-chengdu/pxy-site-cert/be/cert.pem
-        privateKey: oss://cn-chengdu/pxy-site-cert/be/private.pem
