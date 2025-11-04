@@ -43,3 +43,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 packages/frontend/.turbo/*
+# local envs
+.github/envs/
+.test.sh
