@@ -146,17 +146,17 @@ jobs:
       - name: Install Serverless Devs CLI
         run: npm i -g @serverless-devs/s
 
-      - name: Configure AliCloud credential 
-        env:
-          ALICLOUD_ACCESS_KEY_ID: ${{ secrets.ALICLOUD_ACCESS_KEY_ID }}
-          ALICLOUD_ACCESS_KEY_SECRET: ${{ secrets.ALICLOUD_ACCESS_KEY_SECRET }}
-          ALICLOUD_ACCOUNT_ID: ${{ secrets.ALICLOUD_ACCOUNT_ID }}
-        run: |
-          s config add \
-            --AccessKeyID $ALICLOUD_ACCESS_KEY_ID \
-            --AccessKeySecret $ALICLOUD_ACCESS_KEY_SECRET \
-            --AccountID $ALICLOUD_ACCOUNT_ID \
-            -a default -f
+      # - name: Configure AliCloud credential 
+      #   env:
+      #     ALICLOUD_ACCESS_KEY_ID: ${{ secrets.ALICLOUD_ACCESS_KEY_ID }}
+      #     ALICLOUD_ACCESS_KEY_SECRET: ${{ secrets.ALICLOUD_ACCESS_KEY_SECRET }}
+      #     ALICLOUD_ACCOUNT_ID: ${{ secrets.ALICLOUD_ACCOUNT_ID }}
+      #   run: |
+      #     s config add \
+      #       --AccessKeyID $ALICLOUD_ACCESS_KEY_ID \
+      #       --AccessKeySecret $ALICLOUD_ACCESS_KEY_SECRET \
+      #       --AccountID $ALICLOUD_ACCOUNT_ID \
+      #       -a default -f
 
       - name: Deploy to FC (frontend + backend + domain)
-        run: s deploy -t s.ci.yaml -y
+        run: s deploy -t s.ci.yaml -y --use-remote --assume-yes
