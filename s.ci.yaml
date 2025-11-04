@@ -1,0 +1,122 @@
+edition: 3.0.0
+name: pxy-team-site-ci
+access: "default"
+
+vars:
+  region: "cn-chengdu"
+  feFunctionName: "pxy-site-frontend"
+  beFunctionName: "pxy-site-backend"
+
+resources:
+  start_frontend:
+    component: fc3
+    props:
+      region: ${vars.region}
+      description: Next.js Frontend (standalone)
+      runtime: custom.debian10
+      timeout: 60
+      cpu: 1
+      memorySize: 2048
+      diskSize: 512
+      instanceConcurrency: 100
+      layers:
+        - acs:fc:${vars.region}:official:layers/Nodejs20/versions/1
+      customRuntimeConfig:
+        command:
+          - node
+          - ./server.js
+        port: 3000
+      functionName: ${vars.feFunctionName}
+      code: ./dist/deploy-frontend/.next/standalone
+      environmentVariables:
+        PATH: /opt/nodejs20/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+        NODE_ENV: production
+        NEXT_PUBLIC_STRAPI_URL: ${env(NEXT_PUBLIC_STRAPI_URL)}
+
+  start_backend:
+    component: fc3
+    props:
+      region: ${vars.region}
+      description: Strapi Backend
+      runtime: custom.debian10
+      timeout: 120
+      cpu: 1
+      memorySize: 2048
+      diskSize: 1024
+      instanceConcurrency: 20
+      layers:
+        - acs:fc:${vars.region}:official:layers/Nodejs20/versions/1
+      customRuntimeConfig:
+        command:
+          - npm
+          - run
+          - start
+        port: 1337
+      triggers:
+        - triggerConfig:
+            methods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+            authType: anonymous
+            disableURLInternet: false
+          triggerName: default
+          description: ''
+          qualifier: LATEST
+          triggerType: http,https
+      functionName: ${vars.beFunctionName}
+      code: ./dist/deploy-backend
+      environmentVariables:
+        PATH: /opt/nodejs20/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+        NODE_ENV: production
+        HOST: 0.0.0.0
+        PORT: 1337
+        APP_KEYS: ${env(APP_KEYS)}
+        ADMIN_JWT_SECRET: ${env(ADMIN_JWT_SECRET)}
+        JWT_SECRET: ${env(JWT_SECRET)}
+        API_TOKEN_SALT: ${env(API_TOKEN_SALT)}
+        DATABASE_CLIENT: postgres
+        DATABASE_URL: ${env(DATABASE_URL)}
+        OSS_ACCESS_KEY_ID: ${env(OSS_ACCESS_KEY_ID)}
+        OSS_ACCESS_KEY_SECRET: ${env(OSS_ACCESS_KEY_SECRET)}
+        OSS_REGION: ${env(OSS_REGION)}
+        OSS_BUCKET: ${env(OSS_BUCKET)}
+        OSS_BASE_URL: ${env(OSS_BASE_URL)}
+        OSS_UPLOAD_PATH: ${env(OSS_UPLOAD_PATH)}
+        OSS_SECURE: ${env(OSS_SECURE)}
+        OSS_INTERNAL: ${env(OSS_INTERNAL)}
+
+  fc3_domain_fe:
+    component: fc3-domain
+    props:
+      region: ${vars.region}
+      domainName: prof-peng.team
+      protocol: HTTP,HTTPS
+      certConfig:
+        certName: ${env(FE_CERT_NAME)}
+      routeConfig:
+        routes:
+          - path: /*
+            functionName: ${vars.feFunctionName}
+      certConfig:
+        certName: pxy-frontend
+        certificate: oss://cn-chengdu/pxy-site-cert/fe/cert.pem
+        privateKey: oss://cn-chengdu/pxy-site-cert/fe/private.pem
+
+  fc3_domain_be:
+    component: fc3-domain
+    props:
+      region: ${vars.region}
+      domainName: cms.prof-peng.team
+      protocol: HTTP,HTTPS
+      certConfig:
+        certName: ${env(BE_CERT_NAME)}
+      routeConfig:
+        routes:
+          - path: /*
+            functionName: ${vars.beFunctionName}
+      certConfig:
+        certName: pxy-backend
+        certificate: oss://cn-chengdu/pxy-site-cert/be/cert.pem
+        privateKey: oss://cn-chengdu/pxy-site-cert/be/private.pem

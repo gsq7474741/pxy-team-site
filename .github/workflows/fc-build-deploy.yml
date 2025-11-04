@@ -1,0 +1,162 @@
+name: FC Build and Deploy (Frontend + Backend)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+concurrency:
+  group: fc-deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          # cache: 'pnpm'
+          # cache-dependency-path: pnpm-lock.yaml
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
+
+      - name: Set pnpm registry
+        run: |
+          pnpm config set registry https://registry.npmmirror.com
+          pnpm config set store-dir ~/.pnpm-store
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-store-${{ runner.os }}-
+
+      - name: Install dependencies (workspace)
+        run: pnpm -w install --frozen-lockfile
+
+      # ---------- Frontend build ----------
+      - name: Deploy frontend to dist
+        run: pnpm --filter frontend deploy dist/deploy-frontend --legacy
+
+      - name: Cache Next.js build (shared)
+        uses: actions/cache@v4
+        with:
+          path: |
+            dist/shared-cache/next
+          key: fe-next-build-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'packages/frontend/package.json', 'packages/frontend/next.config.*') }}
+          restore-keys: |
+            fe-next-build-${{ runner.os }}-
+
+      - name: Build frontend in dist
+        working-directory: dist/deploy-frontend
+        env:
+          NEXT_CACHE_DIR: ${{ github.workspace }}/dist/shared-cache/next
+        run: npm run build
+
+      - name: Copy static & public into standalone
+        working-directory: dist/deploy-frontend
+        run: |
+          mkdir -p .next/standalone/.next/static
+          cp -r .next/static .next/standalone/.next/
+          cp -r public .next/standalone/
+
+      - name: Upload artifact (frontend standalone)
+        uses: actions/upload-artifact@v4
+        with:
+          name: fe-standalone
+          path: dist/deploy-frontend/.next/standalone
+          if-no-files-found: error
+
+      # ---------- Backend (Strapi) build ----------
+      - name: Deploy backend to dist
+        run: pnpm --filter backend deploy dist/deploy-backend --legacy
+
+      - name: Cache Strapi build (dist)
+        uses: actions/cache@v4
+        with:
+          path: |
+            dist/deploy-backend/.cache
+            dist/deploy-backend/build
+          key: be-strapi-build-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'packages/backend/package.json') }}
+          restore-keys: |
+            be-strapi-build-${{ runner.os }}-
+
+      - name: Build backend (Strapi) in dist
+        working-directory: dist/deploy-backend
+        run: npm run build
+
+      # - name: Prune dev deps (backend) in dist
+      #   working-directory: dist/deploy-backend
+      #   run: npm prune --omit=dev
+
+      - name: Upload artifact (backend deploy)
+        uses: actions/upload-artifact@v4
+        with:
+          name: be-deploy
+          path: dist/deploy-backend
+          if-no-files-found: error
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      # 前端：统一通过域内路由 /api 指向后端，无需提前知道后端域名
+      NEXT_PUBLIC_STRAPI_URL: /api
+      # 后端：请在仓库 Secrets 中配置以下变量
+      APP_KEYS: ${{ secrets.STRAPI_APP_KEYS }}
+      ADMIN_JWT_SECRET: ${{ secrets.STRAPI_ADMIN_JWT_SECRET }}
+      JWT_SECRET: ${{ secrets.STRAPI_JWT_SECRET }}
+      API_TOKEN_SALT: ${{ secrets.STRAPI_API_TOKEN_SALT }}
+      DATABASE_URL: ${{ secrets.STRAPI_DATABASE_URL }}
+      OSS_ACCESS_KEY_ID: ${{ secrets.OSS_ACCESS_KEY_ID }}
+      OSS_ACCESS_KEY_SECRET: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
+      OSS_REGION: ${{ secrets.OSS_REGION }}
+      OSS_BUCKET: ${{ secrets.OSS_BUCKET }}
+      OSS_BASE_URL: ${{ secrets.OSS_BASE_URL }}
+      OSS_UPLOAD_PATH: ${{ secrets.OSS_UPLOAD_PATH }}
+      OSS_SECURE: ${{ secrets.OSS_SECURE }}
+      OSS_INTERNAL: ${{ secrets.OSS_INTERNAL }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Download artifact (frontend)
+        uses: actions/download-artifact@v4
+        with:
+          name: fe-standalone
+          path: dist/deploy-frontend/.next/standalone
+
+      - name: Download artifact (backend)
+        uses: actions/download-artifact@v4
+        with:
+          name: be-deploy
+          path: dist/deploy-backend
+
+      - name: Install Serverless Devs CLI
+        run: npm i -g @serverless-devs/s
+
+      - name: Configure AliCloud credential 
+        env:
+          ALICLOUD_ACCESS_KEY_ID: ${{ secrets.ALICLOUD_ACCESS_KEY_ID }}
+          ALICLOUD_ACCESS_KEY_SECRET: ${{ secrets.ALICLOUD_ACCESS_KEY_SECRET }}
+          ALICLOUD_ACCOUNT_ID: ${{ secrets.ALICLOUD_ACCOUNT_ID }}
+        run: |
+          s config add \
+            --AccessKeyID $ALICLOUD_ACCESS_KEY_ID \
+            --AccessKeySecret $ALICLOUD_ACCESS_KEY_SECRET \
+            --AccountID $ALICLOUD_ACCOUNT_ID \
+            -a default -f
+
+      - name: Deploy to FC (frontend + backend + domain)
+        run: s deploy -t s.ci.yaml -y

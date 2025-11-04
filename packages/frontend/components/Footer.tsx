@@ -73,9 +73,19 @@ export default async function Footer() {
           </div>
         </div>
         
-        <div className="mt-8 pt-6 border-t text-center">
+        <div className="mt-8 pt-6 border-t text-center space-y-2">
           <p className="text-sm text-muted-foreground">
             {new Date().getFullYear()} PXY Research Group. All rights reserved.
+          </p>
+          <p className="text-sm text-muted-foreground">
+            <a 
+              href="https://beian.miit.gov.cn/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="hover:text-primary transition-colors"
+            >
+              渝ICP备2025072323号
+            </a>
           </p>
         </div>
       </div>
