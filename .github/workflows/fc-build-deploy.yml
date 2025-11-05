@@ -121,6 +121,7 @@ jobs:
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
       API_TOKEN_SALT: ${{ secrets.API_TOKEN_SALT }}
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DATABASE_CLIENT: ${{ vars.DATABASE_CLIENT }}
       OSS_ACCESS_KEY_ID: ${{ secrets.OSS_ACCESS_KEY_ID }}
       OSS_ACCESS_KEY_SECRET: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
       OSS_REGION: ${{ vars.OSS_REGION }}
