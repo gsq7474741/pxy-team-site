@@ -42,8 +42,8 @@ resources:
       timeout: 120
       cpu: 1
       memorySize: 2048
-      diskSize: 1024
-      instanceConcurrency: 20
+      diskSize: 512
+      instanceConcurrency: 100
       layers:
         - acs:fc:${vars.region}:official:layers/Nodejs20/versions/1
       customRuntimeConfig:
