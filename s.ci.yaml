@@ -64,7 +64,7 @@ resources:
           triggerName: default
           description: ''
           qualifier: LATEST
-          triggerType: http,https
+          triggerType: http
       functionName: ${vars.beFunctionName}
       code: ./dist/deploy-backend
       environmentVariables:
