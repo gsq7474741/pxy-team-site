@@ -94,7 +94,7 @@ resources:
       domainName: prof-peng.team
       protocol: HTTP,HTTPS
       certConfig:
-        certName: ${env(FE_CERT_NAME)}
+        certId: 21130608
       routeConfig:
         routes:
           - path: /*
@@ -107,7 +107,7 @@ resources:
       domainName: cms.prof-peng.team
       protocol: HTTP,HTTPS
       certConfig:
-        certName: ${env(BE_CERT_NAME)}
+        certId: 21130612
       routeConfig:
         routes:
           - path: /*
