@@ -29,9 +29,9 @@ resources:
       functionName: ${vars.feFunctionName}
       code: ./dist/deploy-frontend/.next/standalone
       environmentVariables:
-        PATH: /opt/nodejs20/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-        NODE_ENV: production
-        NEXT_PUBLIC_STRAPI_URL: ${env(NEXT_PUBLIC_STRAPI_URL)}
+        PATH: "/opt/nodejs20/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        NODE_ENV: "production"
+        NEXT_PUBLIC_STRAPI_URL: "${env(NEXT_PUBLIC_STRAPI_URL)}"
 
   start_backend:
     component: fc3
@@ -68,24 +68,24 @@ resources:
       functionName: ${vars.beFunctionName}
       code: ./dist/deploy-backend
       environmentVariables:
-        PATH: /opt/nodejs20/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-        NODE_ENV: production
-        HOST: 0.0.0.0
-        PORT: 1337
-        APP_KEYS: ${env(APP_KEYS)}
-        ADMIN_JWT_SECRET: ${env(ADMIN_JWT_SECRET)}
-        JWT_SECRET: ${env(JWT_SECRET)}
-        API_TOKEN_SALT: ${env(API_TOKEN_SALT)}
-        DATABASE_CLIENT: postgres
-        DATABASE_URL: ${env(DATABASE_URL)}
-        OSS_ACCESS_KEY_ID: ${env(OSS_ACCESS_KEY_ID)}
-        OSS_ACCESS_KEY_SECRET: ${env(OSS_ACCESS_KEY_SECRET)}
-        OSS_REGION: ${env(OSS_REGION)}
-        OSS_BUCKET: ${env(OSS_BUCKET)}
-        OSS_BASE_URL: ${env(OSS_BASE_URL)}
-        OSS_UPLOAD_PATH: ${env(OSS_UPLOAD_PATH)}
-        OSS_SECURE: ${env(OSS_SECURE)}
-        OSS_INTERNAL: ${env(OSS_INTERNAL)}
+        PATH: "/opt/nodejs20/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        NODE_ENV: "production"
+        HOST: "0.0.0.0"
+        PORT: "1337"
+        APP_KEYS: "${env(APP_KEYS)}"
+        ADMIN_JWT_SECRET: "${env(ADMIN_JWT_SECRET)}"
+        JWT_SECRET: "${env(JWT_SECRET)}"
+        API_TOKEN_SALT: "${env(API_TOKEN_SALT)}"
+        DATABASE_CLIENT: "${env(DATABASE_CLIENT)}"
+        DATABASE_URL: "${env(DATABASE_URL)}"
+        OSS_ACCESS_KEY_ID: "${env(OSS_ACCESS_KEY_ID)}"
+        OSS_ACCESS_KEY_SECRET: "${env(OSS_ACCESS_KEY_SECRET)}"
+        OSS_REGION: "${env(OSS_REGION)}"
+        OSS_BUCKET: "${env(OSS_BUCKET)}"
+        OSS_BASE_URL: "${env(OSS_BASE_URL)}"
+        OSS_UPLOAD_PATH: "${env(OSS_UPLOAD_PATH)}"
+        OSS_SECURE: "${env(OSS_SECURE)}"
+        OSS_INTERNAL: "${env(OSS_INTERNAL)}"
 
   fc3_domain_fe:
     component: fc3-domain
