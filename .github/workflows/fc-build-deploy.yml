@@ -31,9 +31,7 @@ jobs:
           run_install: false
 
       - name: Set pnpm registry
-        run: |
-          pnpm config set registry https://registry.npmmirror.com
-          pnpm config set store-dir ~/.pnpm-store
+        run: pnpm config set store-dir ~/.pnpm-store
 
       - name: Cache pnpm store
         uses: actions/cache@v4
@@ -46,24 +44,13 @@ jobs:
       - name: Install dependencies (workspace)
         run: pnpm -w install --frozen-lockfile
 
-      # ---------- Frontend build ----------
+      - name: Build all
+        run: pnpm turbo run build
+      
       - name: Deploy frontend to dist
         run: pnpm --filter frontend deploy dist/deploy-frontend --legacy
 
-      - name: Cache Next.js build (shared)
-        uses: actions/cache@v4
-        with:
-          path: |
-            dist/shared-cache/next
-          key: fe-next-build-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'packages/frontend/package.json', 'packages/frontend/next.config.*') }}
-          restore-keys: |
-            fe-next-build-${{ runner.os }}-
 
-      - name: Build frontend in dist
-        working-directory: dist/deploy-frontend
-        env:
-          NEXT_CACHE_DIR: ${{ github.workspace }}/dist/shared-cache/next
-        run: npm run build
 
       - name: Copy static & public into standalone
         working-directory: dist/deploy-frontend
@@ -79,27 +66,8 @@ jobs:
           path: dist/deploy-frontend/.next/standalone
           if-no-files-found: error
 
-      # ---------- Backend (Strapi) build ----------
       - name: Deploy backend to dist
         run: pnpm --filter backend deploy dist/deploy-backend --legacy
-
-      - name: Cache Strapi build (dist)
-        uses: actions/cache@v4
-        with:
-          path: |
-            dist/deploy-backend/.cache
-            dist/deploy-backend/build
-          key: be-strapi-build-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'packages/backend/package.json') }}
-          restore-keys: |
-            be-strapi-build-${{ runner.os }}-
-
-      - name: Build backend (Strapi) in dist
-        working-directory: dist/deploy-backend
-        run: npm run build
-
-      # - name: Prune dev deps (backend) in dist
-      #   working-directory: dist/deploy-backend
-      #   run: npm prune --omit=dev
 
       - name: Upload artifact (backend deploy)
         uses: actions/upload-artifact@v4
@@ -107,6 +75,72 @@ jobs:
           name: be-deploy
           path: dist/deploy-backend
           if-no-files-found: error
+
+      # ---------- Frontend build ----------
+      # - name: Deploy frontend to dist
+      #   run: pnpm --filter frontend deploy dist/deploy-frontend --legacy
+
+      # - name: Cache Next.js build (shared)
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: |
+      #       dist/shared-cache/next
+      #     key: fe-next-build-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'packages/frontend/package.json', 'packages/frontend/next.config.*') }}
+      #     restore-keys: |
+      #       fe-next-build-${{ runner.os }}-
+
+      # - name: Build frontend in dist
+      #   working-directory: dist/deploy-frontend
+      #   env:
+      #     NEXT_CACHE_DIR: ${{ github.workspace }}/dist/shared-cache/next
+      #   run: npm run build
+
+      # - name: Copy static & public into standalone
+      #   working-directory: dist/deploy-frontend
+      #   run: |
+      #     mkdir -p .next/standalone/.next/static
+      #     cp -r .next/static .next/standalone/.next/
+      #     cp -r public .next/standalone/
+
+      # - name: Upload artifact (frontend standalone)
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: fe-standalone
+      #     path: dist/deploy-frontend/.next/standalone
+      #     if-no-files-found: error
+
+      # # ---------- Backend (Strapi) build ----------
+      # - name: Deploy backend to dist
+      #   run: pnpm --filter backend deploy dist/deploy-backend --legacy
+
+      # - name: Cache Strapi build (dist)
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: |
+      #       dist/deploy-backend/.cache
+      #       dist/deploy-backend/build
+      #     key: be-strapi-build-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'packages/backend/package.json') }}
+      #     restore-keys: |
+      #       be-strapi-build-${{ runner.os }}-
+
+      # - name: Install deps using npm
+      #   working-directory: dist/deploy-backend
+      #   run: npm i
+
+      # - name: Build backend (Strapi) in dist
+      #   working-directory: dist/deploy-backend
+      #   run: npm run build
+
+      # # - name: Prune dev deps (backend) in dist
+      # #   working-directory: dist/deploy-backend
+      # #   run: npm prune --omit=dev
+
+      # - name: Upload artifact (backend deploy)
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: be-deploy
+      #     path: dist/deploy-backend
+      #     if-no-files-found: error
 
   deploy:
     needs: build
