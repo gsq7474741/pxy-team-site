@@ -41,8 +41,8 @@ jobs:
           restore-keys: |
             pnpm-store-${{ runner.os }}-
 
-      - name: Install dependencies (workspace)
-        run: pnpm -w install --frozen-lockfile
+      - name: Install dependencies
+        run: pnpm i
 
       - name: Build all
         run: pnpm turbo run build
