@@ -17,6 +17,12 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Remove gitignore
+        run: |
+          rm .gitignore
+          rm ./packages/backend/.gitignore
+          rm ./packages/frontend/.gitignore
+
       - name: Setup Node 20
         uses: actions/setup-node@v4
         with:
@@ -49,8 +55,6 @@ jobs:
       
       - name: Deploy frontend to dist
         run: pnpm --filter frontend deploy dist/deploy-frontend --legacy
-
-
 
       - name: Copy static & public into standalone
         working-directory: dist/deploy-frontend
