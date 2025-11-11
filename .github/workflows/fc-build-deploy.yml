@@ -13,6 +13,28 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment: testing
+    env:
+      # 前端：统一通过域内路由 /api 指向后端，无需提前知道后端域名
+      NEXT_PUBLIC_STRAPI_URL: ${{ vars.NEXT_PUBLIC_STRAPI_URL }}
+      # 后端：请在仓库 Secrets 中配置以下变量
+      APP_KEYS: ${{ secrets.APP_KEYS }}
+      ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      API_TOKEN_SALT: ${{ secrets.API_TOKEN_SALT }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DATABASE_CLIENT: ${{ vars.DATABASE_CLIENT }}
+      OSS_ACCESS_KEY_ID: ${{ secrets.OSS_ACCESS_KEY_ID }}
+      OSS_ACCESS_KEY_SECRET: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
+      OSS_REGION: ${{ vars.OSS_REGION }}
+      OSS_BUCKET: ${{ vars.OSS_BUCKET }}
+      OSS_BASE_URL: ${{ vars.OSS_BASE_URL }}
+      OSS_UPLOAD_PATH: ${{ vars.OSS_UPLOAD_PATH }}
+      OSS_SECURE: ${{ vars.OSS_SECURE }}
+      OSS_INTERNAL: ${{ vars.OSS_INTERNAL }}
+      ALICLOUD_ACCESS_KEY_ID: ${{ secrets.ALICLOUD_ACCESS_KEY_ID }}
+      ALICLOUD_ACCESS_KEY_SECRET: ${{ secrets.ALICLOUD_ACCESS_KEY_SECRET }}
+      FE_CERT_NAME: ${{ vars.FE_CERT_NAME }}
+      BE_CERT_NAME: ${{ vars.BE_CERT_NAME }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -80,6 +102,25 @@ jobs:
           path: dist/deploy-backend
           if-no-files-found: error
 
+      - name: Install Serverless Devs CLI
+        run: npm i -g @serverless-devs/s
+
+      - name: Configure AliCloud credential 
+        env:
+          ALICLOUD_ACCESS_KEY_ID: ${{ secrets.ALICLOUD_ACCESS_KEY_ID }}
+          ALICLOUD_ACCESS_KEY_SECRET: ${{ secrets.ALICLOUD_ACCESS_KEY_SECRET }}
+        run: |
+          s config add \
+            --AccessKeyID $ALICLOUD_ACCESS_KEY_ID \
+            --AccessKeySecret $ALICLOUD_ACCESS_KEY_SECRET \
+            -a default -f
+
+      - name: Deploy to FC (frontend + backend + domain)
+        env:
+          ALICLOUD_ACCESS_KEY_ID: ${{ secrets.ALICLOUD_ACCESS_KEY_ID }}
+          ALICLOUD_ACCESS_KEY_SECRET: ${{ secrets.ALICLOUD_ACCESS_KEY_SECRET }}
+        run: s deploy -t s.ci.yaml -y --use-remote --assume-yes
+
       # ---------- Frontend build ----------
       # - name: Deploy frontend to dist
       #   run: pnpm --filter frontend deploy dist/deploy-frontend --legacy
@@ -146,63 +187,63 @@ jobs:
       #     path: dist/deploy-backend
       #     if-no-files-found: error
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment: testing
-    env:
-      # 前端：统一通过域内路由 /api 指向后端，无需提前知道后端域名
-      NEXT_PUBLIC_STRAPI_URL: ${{ vars.NEXT_PUBLIC_STRAPI_URL }}
-      # 后端：请在仓库 Secrets 中配置以下变量
-      APP_KEYS: ${{ secrets.APP_KEYS }}
-      ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET }}
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
-      API_TOKEN_SALT: ${{ secrets.API_TOKEN_SALT }}
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      DATABASE_CLIENT: ${{ vars.DATABASE_CLIENT }}
-      OSS_ACCESS_KEY_ID: ${{ secrets.OSS_ACCESS_KEY_ID }}
-      OSS_ACCESS_KEY_SECRET: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
-      OSS_REGION: ${{ vars.OSS_REGION }}
-      OSS_BUCKET: ${{ vars.OSS_BUCKET }}
-      OSS_BASE_URL: ${{ vars.OSS_BASE_URL }}
-      OSS_UPLOAD_PATH: ${{ vars.OSS_UPLOAD_PATH }}
-      OSS_SECURE: ${{ vars.OSS_SECURE }}
-      OSS_INTERNAL: ${{ vars.OSS_INTERNAL }}
-      ALICLOUD_ACCESS_KEY_ID: ${{ secrets.ALICLOUD_ACCESS_KEY_ID }}
-      ALICLOUD_ACCESS_KEY_SECRET: ${{ secrets.ALICLOUD_ACCESS_KEY_SECRET }}
-      FE_CERT_NAME: ${{ vars.FE_CERT_NAME }}
-      BE_CERT_NAME: ${{ vars.BE_CERT_NAME }}
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+  # deploy:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   environment: testing
+  #   env:
+  #     # 前端：统一通过域内路由 /api 指向后端，无需提前知道后端域名
+  #     NEXT_PUBLIC_STRAPI_URL: ${{ vars.NEXT_PUBLIC_STRAPI_URL }}
+  #     # 后端：请在仓库 Secrets 中配置以下变量
+  #     APP_KEYS: ${{ secrets.APP_KEYS }}
+  #     ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET }}
+  #     JWT_SECRET: ${{ secrets.JWT_SECRET }}
+  #     API_TOKEN_SALT: ${{ secrets.API_TOKEN_SALT }}
+  #     DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  #     DATABASE_CLIENT: ${{ vars.DATABASE_CLIENT }}
+  #     OSS_ACCESS_KEY_ID: ${{ secrets.OSS_ACCESS_KEY_ID }}
+  #     OSS_ACCESS_KEY_SECRET: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
+  #     OSS_REGION: ${{ vars.OSS_REGION }}
+  #     OSS_BUCKET: ${{ vars.OSS_BUCKET }}
+  #     OSS_BASE_URL: ${{ vars.OSS_BASE_URL }}
+  #     OSS_UPLOAD_PATH: ${{ vars.OSS_UPLOAD_PATH }}
+  #     OSS_SECURE: ${{ vars.OSS_SECURE }}
+  #     OSS_INTERNAL: ${{ vars.OSS_INTERNAL }}
+  #     ALICLOUD_ACCESS_KEY_ID: ${{ secrets.ALICLOUD_ACCESS_KEY_ID }}
+  #     ALICLOUD_ACCESS_KEY_SECRET: ${{ secrets.ALICLOUD_ACCESS_KEY_SECRET }}
+  #     FE_CERT_NAME: ${{ vars.FE_CERT_NAME }}
+  #     BE_CERT_NAME: ${{ vars.BE_CERT_NAME }}
+  #   steps:
+  #     - name: Checkout repo
+  #       uses: actions/checkout@v4
 
-      - name: Download artifact (frontend)
-        uses: actions/download-artifact@v4
-        with:
-          name: fe-standalone
-          path: dist/deploy-frontend/.next/standalone
+  #     - name: Download artifact (frontend)
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: fe-standalone
+  #         path: dist/deploy-frontend/.next/standalone
 
-      - name: Download artifact (backend)
-        uses: actions/download-artifact@v4
-        with:
-          name: be-deploy
-          path: dist/deploy-backend
+  #     - name: Download artifact (backend)
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: be-deploy
+  #         path: dist/deploy-backend
 
-      - name: Install Serverless Devs CLI
-        run: npm i -g @serverless-devs/s
+  #     - name: Install Serverless Devs CLI
+  #       run: npm i -g @serverless-devs/s
 
-      - name: Configure AliCloud credential 
-        env:
-          ALICLOUD_ACCESS_KEY_ID: ${{ secrets.ALICLOUD_ACCESS_KEY_ID }}
-          ALICLOUD_ACCESS_KEY_SECRET: ${{ secrets.ALICLOUD_ACCESS_KEY_SECRET }}
-        run: |
-          s config add \
-            --AccessKeyID $ALICLOUD_ACCESS_KEY_ID \
-            --AccessKeySecret $ALICLOUD_ACCESS_KEY_SECRET \
-            -a default -f
+  #     - name: Configure AliCloud credential 
+  #       env:
+  #         ALICLOUD_ACCESS_KEY_ID: ${{ secrets.ALICLOUD_ACCESS_KEY_ID }}
+  #         ALICLOUD_ACCESS_KEY_SECRET: ${{ secrets.ALICLOUD_ACCESS_KEY_SECRET }}
+  #       run: |
+  #         s config add \
+  #           --AccessKeyID $ALICLOUD_ACCESS_KEY_ID \
+  #           --AccessKeySecret $ALICLOUD_ACCESS_KEY_SECRET \
+  #           -a default -f
 
-      - name: Deploy to FC (frontend + backend + domain)
-        env:
-          ALICLOUD_ACCESS_KEY_ID: ${{ secrets.ALICLOUD_ACCESS_KEY_ID }}
-          ALICLOUD_ACCESS_KEY_SECRET: ${{ secrets.ALICLOUD_ACCESS_KEY_SECRET }}
-        run: s deploy -t s.ci.yaml -y --use-remote --assume-yes
+  #     - name: Deploy to FC (frontend + backend + domain)
+  #       env:
+  #         ALICLOUD_ACCESS_KEY_ID: ${{ secrets.ALICLOUD_ACCESS_KEY_ID }}
+  #         ALICLOUD_ACCESS_KEY_SECRET: ${{ secrets.ALICLOUD_ACCESS_KEY_SECRET }}
+  #       run: s deploy -t s.ci.yaml -y --use-remote --assume-yes
