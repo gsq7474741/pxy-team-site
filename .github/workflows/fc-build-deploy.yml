@@ -21,8 +21,13 @@ jobs:
       ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
       API_TOKEN_SALT: ${{ secrets.API_TOKEN_SALT }}
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
       DATABASE_CLIENT: ${{ vars.DATABASE_CLIENT }}
+      DATABASE_HOST: ${{ vars.DATABASE_HOST }}
+      DATABASE_PORT: ${{ vars.DATABASE_PORT }}
+      DATABASE_NAME: ${{ vars.DATABASE_NAME }}
+      DATABASE_USERNAME: ${{ vars.DATABASE_USERNAME }}
+      DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+      DATABASE_SSL: ${{ vars.DATABASE_SSL }}
       OSS_ACCESS_KEY_ID: ${{ secrets.OSS_ACCESS_KEY_ID }}
       OSS_ACCESS_KEY_SECRET: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
       OSS_REGION: ${{ vars.OSS_REGION }}
