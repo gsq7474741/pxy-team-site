@@ -23,11 +23,12 @@ resources:
         - acs:fc:${vars.region}:official:layers/Nodejs20/versions/1
       customRuntimeConfig:
         command:
-          - node
-          - ./server.js
+          - npm
+          - run
+          - start
         port: 3000
       functionName: ${vars.feFunctionName}
-      code: ./dist/deploy-frontend/.next/standalone
+      code: ./dist/deploy-frontend/
       environmentVariables:
         PATH: "/opt/nodejs20/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
         NODE_ENV: "production"

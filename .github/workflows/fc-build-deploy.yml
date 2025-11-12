@@ -90,11 +90,11 @@ jobs:
           cp -r .next/static .next/standalone/.next/
           cp -r public .next/standalone/
 
-      - name: Upload artifact (frontend standalone)
+      - name: Upload artifact (frontend export)
         uses: actions/upload-artifact@v4
         with:
-          name: fe-standalone
-          path: dist/deploy-frontend/.next/standalone
+          name: fe-export
+          path: dist/deploy-frontend
           if-no-files-found: error
 
       - name: Deploy backend to dist
