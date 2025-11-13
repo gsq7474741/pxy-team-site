@@ -5,6 +5,7 @@
  */
 
 const OSS = require('ali-oss');
+const { Readable } = require('stream');
 
 module.exports = {
   init(config) {
@@ -76,10 +77,18 @@ module.exports = {
 
         try {
           // 准备上传内容
-          const fileBuffer = file.buffer || Buffer.from(file.stream);
+          let uploadContent;
+          if (file.buffer) {
+            uploadContent = file.buffer;
+          } else if (file.stream) {
+            // 将 Stream 转换为 Buffer
+            uploadContent = await streamToBuffer(file.stream);
+          } else {
+            throw new Error('文件必须包含 buffer 或 stream');
+          }
           
           // 上传到 OSS
-          const result = await client.put(fullPath, fileBuffer, {
+          const result = await client.put(fullPath, uploadContent, {
             headers: {
               'Content-Type': file.mime,
             },
@@ -160,3 +169,19 @@ module.exports = {
     };
   },
 };
+
+/**
+ * 将 Stream 转换为 Buffer
+ */
+function streamToBuffer(stream) {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    stream.on('data', (chunk) => {
+      chunks.push(chunk);
+    });
+    stream.on('end', () => {
+      resolve(Buffer.concat(chunks));
+    });
+    stream.on('error', reject);
+  });
+}

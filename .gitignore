@@ -46,3 +46,5 @@ packages/frontend/.turbo/*
 # local envs
 .github/envs/
 .test.sh
+
+dist/
