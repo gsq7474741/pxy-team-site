@@ -145,16 +145,16 @@ export default function DebugLocalePage() {
             <h3 className="font-semibold mb-2">Chrome / Edge:</h3>
             <ol className="list-decimal list-inside space-y-1 text-sm text-muted-foreground">
               <li>访问 <code className="bg-muted px-1 rounded">chrome://settings/languages</code></li>
-              <li>在 "首选语言" 列表中调整语言顺序</li>
-              <li>将 "中文(简体)" 拖到最上面即可设为 zh-CN</li>
+              <li>在「首选语言」列表中调整语言顺序</li>
+              <li>将「中文(简体)」拖到最上面即可设为 zh-CN</li>
               <li>刷新页面查看效果</li>
             </ol>
           </div>
           <div>
             <h3 className="font-semibold mb-2">Safari (macOS):</h3>
             <ol className="list-decimal list-inside space-y-1 text-sm text-muted-foreground">
-              <li>打开 "系统设置" → "通用" → "语言与地区"</li>
-              <li>调整 "首选语言" 顺序</li>
+              <li>打开「系统设置」→「通用」→「语言与地区」</li>
+              <li>调整「首选语言」顺序</li>
               <li>重启 Safari 浏览器</li>
             </ol>
           </div>

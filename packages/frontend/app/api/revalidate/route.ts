@@ -1,4 +1,4 @@
-import { revalidatePath, revalidateTag } from 'next/cache';
+import { revalidatePath } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 
 /**
@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
       if (text) {
         body = JSON.parse(text);
       }
-    } catch (e) {
+    } catch {
       console.warn('[Revalidate] 无法解析请求体，将重新验证所有路径');
     }
 
@@ -105,7 +105,7 @@ export async function POST(request: NextRequest) {
     });
 
     // 3. 根据模型类型重新验证相应路径
-    let revalidatedPaths: string[] = [];
+    const revalidatedPaths: string[] = [];
 
     if (model && MODEL_PATH_MAP[model]) {
       // 重新验证特定模型的路径

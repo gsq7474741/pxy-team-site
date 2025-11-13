@@ -33,6 +33,7 @@ resources:
         PATH: "/opt/nodejs20/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
         NODE_ENV: "production"
         NEXT_PUBLIC_STRAPI_URL: "${env(NEXT_PUBLIC_STRAPI_URL)}"
+        REVALIDATE_SECRET: "${env(REVALIDATE_SECRET)}"
 
   start_backend:
     component: fc3

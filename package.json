@@ -17,9 +17,12 @@
     "backend:build": "turbo run build --filter=backend",
     "frontend:build": "turbo run build --filter=frontend",
     "backend:lint": "turbo run lint --filter=backend",
-    "frontend:lint": "turbo run lint --filter=frontend"
+    "frontend:lint": "turbo run lint --filter=frontend",
+    "upload-env": "tsx scripts/upload-env.ts"
   },
   "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsx": "^4.7.0",
     "turbo": "^1.13.0"
   },
   "engines": {

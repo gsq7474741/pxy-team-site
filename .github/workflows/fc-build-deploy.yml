@@ -16,6 +16,8 @@ jobs:
     env:
       # 前端：统一通过域内路由 /api 指向后端，无需提前知道后端域名
       NEXT_PUBLIC_STRAPI_URL: ${{ vars.NEXT_PUBLIC_STRAPI_URL }}
+      # 前端：Revalidate API 密钥（用于 Strapi Webhook）
+      REVALIDATE_SECRET: ${{ secrets.REVALIDATE_SECRET }}
       # 后端：请在仓库 Secrets 中配置以下变量
       APP_KEYS: ${{ secrets.APP_KEYS }}
       ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET }}
