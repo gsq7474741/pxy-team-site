@@ -1,19 +1,21 @@
 "use client";
 
- 
+import { useTranslations } from 'next-intl';
 
 export default function HeroSection() {
+  const t = useTranslations('hero');
+  
   return (
     <div className="relative overflow-hidden bg-gradient-to-b from-primary/10 to-background py-16 md:py-24">
       <div className="max-w-screen-xl mx-auto px-4 md:px-6 relative z-10">
         <div className="mx-auto max-w-3xl text-center">
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
-          Prof. Peng 课题组
+            {t('title')}
           </h1>
           <p className="mt-6 text-lg leading-8 text-muted-foreground">
-            探索前沿科技，推动学术创新。
+            {t('subtitle_line1')}
             <br />
-            我们致力于在人工智能、机器学习和数据科学领域开展尖端研究，培养下一代科研人才。
+            {t('subtitle_line2')}
           </p>
         </div>
       </div>

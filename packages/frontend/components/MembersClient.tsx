@@ -6,12 +6,15 @@ import { useSearchParams } from "next/navigation";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import type { MemberViewModel } from "@/lib/types";
 import { useMemo } from "react";
+import { useTranslations } from 'next-intl';
 
 interface Props {
   members: MemberViewModel[];
 }
 
 export default function MembersClient({ members }: Props) {
+  const t = useTranslations('members');
+  const tCommon = useTranslations('common');
   const searchParams = useSearchParams();
   const activeRole = searchParams.get("role") ?? "all";
 
@@ -22,7 +25,7 @@ export default function MembersClient({ members }: Props) {
   return (
     <div className="max-w-screen-xl mx-auto px-4 md:px-6 py-12">
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold tracking-tight">团队成员</h1>
+        <h1 className="text-4xl font-bold tracking-tight">{t('title')}</h1>
       </div>
 
       <div className="mb-8 overflow-x-auto">
@@ -30,7 +33,7 @@ export default function MembersClient({ members }: Props) {
           {tabs.map((r) => {
             const isActive = activeRole === r;
             const href = r === "all" ? "/members" : `/members?role=${encodeURIComponent(r)}`;
-            const label = r === "all" ? "全部" : r;
+            const label = r === "all" ? t('all') : r;
             return (
               <Link
                 key={r}
@@ -68,7 +71,7 @@ export default function MembersClient({ members }: Props) {
                 </CardContent>
                 <CardFooter>
                   <Link href={`/members/${member.slug}`} className="text-primary hover:underline">
-                    查看详情
+                    {t('view_details')}
                   </Link>
                 </CardFooter>
               </Card>
@@ -77,7 +80,7 @@ export default function MembersClient({ members }: Props) {
         </div>
       ) : (
         <div className="text-center py-12">
-          <p className="text-muted-foreground">暂无团队成员数据</p>
+          <p className="text-muted-foreground">{tCommon('no_data')}</p>
         </div>
       )}
     </div>

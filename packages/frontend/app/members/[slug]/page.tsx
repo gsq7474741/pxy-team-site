@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { memberApi, getStrapiMedia, type MemberViewModel } from "@/lib/strapi-client";
+import { getTranslations } from 'next-intl/server';
 
 // 成员详情页面参数类型
 interface MemberPageProps {
@@ -22,6 +23,7 @@ export async function generateStaticParams() {
 }
 
 export default async function MemberDetailPage({ params }: MemberPageProps) {
+  const t = await getTranslations('members');
   const { slug } = await params;
   let member: MemberViewModel | null = null;
 
@@ -52,7 +54,7 @@ export default async function MemberDetailPage({ params }: MemberPageProps) {
       <div className="mb-6">
         <Button variant="outline" asChild>
           <Link href="/members">
-            ← 返回团队成员
+            ← {t('back_to_list')}
           </Link>
         </Button>
       </div>
@@ -75,7 +77,7 @@ export default async function MemberDetailPage({ params }: MemberPageProps) {
             <p className="text-lg text-muted-foreground">{role}</p>
             {email && (
               <p className="text-sm">
-                <span className="font-medium">邮箱：</span> {email}
+                <span className="font-medium">{t('email')}:</span> {email}
               </p>
             )}
           </div>
@@ -85,7 +87,7 @@ export default async function MemberDetailPage({ params }: MemberPageProps) {
         <div className="md:col-span-2 space-y-8">
           {/* 个人简介 */}
           <section>
-            <h2 className="text-xl font-semibold mb-4">个人简介</h2>
+            <h2 className="text-xl font-semibold mb-4">{t('bio')}</h2>
             <div className="prose max-w-none">
               <p className="text-muted-foreground">{bio}</p>
             </div>
@@ -94,7 +96,7 @@ export default async function MemberDetailPage({ params }: MemberPageProps) {
           {/* 研究兴趣 */}
           {researchInterests.length > 0 && (
             <section>
-              <h2 className="text-xl font-semibold mb-4">研究兴趣</h2>
+              <h2 className="text-xl font-semibold mb-4">{t('research_interests')}</h2>
               <ul className="list-disc list-inside space-y-1">
                 {researchInterests.map((interest, index) => (
                   <li key={index} className="text-muted-foreground">{interest}</li>
@@ -106,7 +108,7 @@ export default async function MemberDetailPage({ params }: MemberPageProps) {
           {/* 教育背景 */}
           {education.length > 0 && (
             <section>
-              <h2 className="text-xl font-semibold mb-4">教育背景</h2>
+              <h2 className="text-xl font-semibold mb-4">{t('education')}</h2>
               <ul className="list-disc list-inside space-y-1">
                 {education.map((edu, index) => (
                   <li key={index} className="text-muted-foreground">{edu}</li>
@@ -118,7 +120,7 @@ export default async function MemberDetailPage({ params }: MemberPageProps) {
           {/* 代表性论文 */}
           {publications.length > 0 && (
             <section>
-              <h2 className="text-xl font-semibold mb-4">代表性论文</h2>
+              <h2 className="text-xl font-semibold mb-4">{t('publications')}</h2>
               <ul className="list-disc list-inside space-y-1">
                 {publications.map((pub, index) => (
                   <li key={index} className="text-muted-foreground">{pub}</li>

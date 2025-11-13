@@ -5,10 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { researchApi, newsApi, type ResearchAreaViewModel, type NewsViewModel, formatDate, stripHtmlTags, truncateText } from "@/lib/strapi-client";
 import { getLocale } from "@/lib/server-locale";
+import { getTranslations } from 'next-intl/server';
 
-export const revalidate = 300;
+// 数据缓存时间：60秒（1分钟）
+// 设置为 0 则完全禁用缓存，每次都会从 Strapi 获取最新数据
+export const revalidate = 60;
 
 export default async function Home() {
+  const t = await getTranslations('home');
+  const tResearch = await getTranslations('research');
+  const tCommon = await getTranslations('common');
   const locale = await getLocale();
   let researchAreas: ResearchAreaViewModel[] = [];
   let latestNews: NewsViewModel[] = [];
@@ -32,9 +38,9 @@ export default async function Home() {
       <section className="py-16 bg-background">
         <div className="max-w-screen-xl mx-auto px-4 md:px-6">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold tracking-tight">我们的研究</h2>
+            <h2 className="text-3xl font-bold tracking-tight">{t('research_title')}</h2>
             <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              我们专注于以下几个前沿研究领域，致力于解决关键科学问题。
+              {t('research_subtitle')}
             </p>
           </div>
           
@@ -61,7 +67,7 @@ export default async function Home() {
                 </CardContent>
                 <CardFooter>
                   <Button variant="outline" asChild>
-                    <Link href={`/research/${area.slug}`}>了解更多</Link>
+                    <Link href={`/research/${area.slug}`}>{tResearch('learn_more')}</Link>
                   </Button>
                 </CardFooter>
               </Card>
@@ -74,9 +80,9 @@ export default async function Home() {
       <section className="py-16 bg-muted/30">
         <div className="max-w-screen-xl mx-auto px-4 md:px-6">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold tracking-tight">最新动态</h2>
+            <h2 className="text-3xl font-bold tracking-tight">{t('news_title')}</h2>
             <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              了解我们课题组的最新研究成果和活动信息。
+              {t('news_subtitle')}
             </p>
           </div>
           
@@ -95,19 +101,19 @@ export default async function Home() {
                   </CardContent>
                   <CardFooter>
                     <Button variant="outline" asChild>
-                      <Link href={`/news/${n.id}`}>查看详情</Link>
+                      <Link href={`/news/${n.id}`}>{tCommon('view_details')}</Link>
                     </Button>
                   </CardFooter>
                 </Card>
               ))
             ) : (
-              <div className="col-span-2 text-center text-muted-foreground">暂无动态</div>
+              <div className="col-span-2 text-center text-muted-foreground">{tCommon('no_data')}</div>
             )}
           </div>
           
           <div className="mt-10 text-center">
             <Button asChild>
-              <Link href="/news">查看全部动态</Link>
+              <Link href="/news">{t('view_all_news')}</Link>
             </Button>
           </div>
         </div>

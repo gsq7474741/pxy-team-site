@@ -7,8 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, ExternalLink, FileText, Calendar, Trophy } from "lucide-react";
 import { getLocale } from "@/lib/server-locale";
+import { getTranslations } from 'next-intl/server';
 
-export const revalidate = 300;
+// 研究方向详情缓存：60秒
+export const revalidate = 60;
 
 interface ResearchAreaDetailPageProps {
   params: Promise<{
@@ -17,6 +19,9 @@ interface ResearchAreaDetailPageProps {
 }
 
 export default async function ResearchAreaDetailPage({ params }: ResearchAreaDetailPageProps) {
+  const t = await getTranslations('research');
+  const tPub = await getTranslations('publications');
+  const tCommon = await getTranslations('common');
   const locale = await getLocale();
   let researchArea: ResearchAreaViewModel;
 
@@ -35,7 +40,7 @@ export default async function ResearchAreaDetailPage({ params }: ResearchAreaDet
         <Button asChild variant="ghost" className="gap-2">
           <Link href="/research">
             <ArrowLeft className="h-4 w-4" />
-            返回研究方向列表
+            {t('back_to_list')}
           </Link>
         </Button>
       </div>
@@ -78,7 +83,7 @@ export default async function ResearchAreaDetailPage({ params }: ResearchAreaDet
       {/* 详细内容 */}
       {researchArea.detailedContent && (
         <div className="mb-12">
-          <h2 className="text-3xl font-bold tracking-tight mb-6">研究详情</h2>
+          <h2 className="text-3xl font-bold tracking-tight mb-6">{t('details')}</h2>
           <div 
             className="prose prose-lg max-w-none"
             dangerouslySetInnerHTML={{ __html: researchArea.detailedContent }}
@@ -89,7 +94,7 @@ export default async function ResearchAreaDetailPage({ params }: ResearchAreaDet
       {/* 研究亮点 */}
       {researchArea.researchHighlights && researchArea.researchHighlights.length > 0 && (
         <div className="mb-12">
-          <h2 className="text-3xl font-bold tracking-tight mb-6">研究亮点</h2>
+          <h2 className="text-3xl font-bold tracking-tight mb-6">{t('highlights')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {researchArea.researchHighlights.map((highlight, index) => (
               <Card key={index} className="transition-all hover:shadow-md">
@@ -106,7 +111,7 @@ export default async function ResearchAreaDetailPage({ params }: ResearchAreaDet
                       <Button asChild variant="outline" size="sm" className="gap-2">
                         <Link href={highlight.link} target="_blank" rel="noopener noreferrer">
                           <ExternalLink className="h-4 w-4" />
-                          了解更多
+                          {t('learn_more')}
                         </Link>
                       </Button>
                     </div>
@@ -121,7 +126,7 @@ export default async function ResearchAreaDetailPage({ params }: ResearchAreaDet
       {/* 相关论文 */}
       {researchArea.relatedPublications && researchArea.relatedPublications.length > 0 && (
         <div className="mb-12">
-          <h2 className="text-3xl font-bold tracking-tight mb-6">相关论文</h2>
+          <h2 className="text-3xl font-bold tracking-tight mb-6">{t('related_publications')}</h2>
           <ul className="rounded-lg border divide-y">
             {researchArea.relatedPublications.map((publication) => (
               <li key={publication.id} className="flex items-start justify-between gap-4 p-5 hover:bg-muted/40">
@@ -149,7 +154,7 @@ export default async function ResearchAreaDetailPage({ params }: ResearchAreaDet
                     <Button asChild variant="outline" size="sm" className="gap-2">
                       <Link href={publication.doiLink} target="_blank" rel="noopener noreferrer">
                         <ExternalLink className="h-4 w-4" />
-                        查看论文
+                        {tPub('view_online')}
                       </Link>
                     </Button>
                   )}
@@ -163,7 +168,7 @@ export default async function ResearchAreaDetailPage({ params }: ResearchAreaDet
       {/* 相关专利 */}
       {researchArea.relatedPatents && researchArea.relatedPatents.length > 0 && (
         <div className="mb-12">
-          <h2 className="text-3xl font-bold tracking-tight mb-6">相关专利</h2>
+          <h2 className="text-3xl font-bold tracking-tight mb-6">{t('related_patents')}</h2>
           <ul className="rounded-lg border divide-y">
             {researchArea.relatedPatents.map((p) => (
               <li key={p.id} className="flex items-start justify-between gap-4 p-5 hover:bg-muted/40">
@@ -189,7 +194,7 @@ export default async function ResearchAreaDetailPage({ params }: ResearchAreaDet
                     <Button asChild variant="outline" size="sm" className="gap-2">
                       <Link href={p.pdfFile.url} target="_blank" rel="noopener noreferrer">
                         <FileText className="h-4 w-4" />
-                        下载PDF
+                        {tPub('download_pdf')}
                       </Link>
                     </Button>
                   )}
@@ -197,7 +202,7 @@ export default async function ResearchAreaDetailPage({ params }: ResearchAreaDet
                     <Button asChild variant="outline" size="sm" className="gap-2">
                       <Link href={p.link} target="_blank" rel="noopener noreferrer">
                         <ExternalLink className="h-4 w-4" />
-                        外部链接
+                        {tCommon('external_link')}
                       </Link>
                     </Button>
                   )}
@@ -211,7 +216,7 @@ export default async function ResearchAreaDetailPage({ params }: ResearchAreaDet
       {/* 竞赛奖项 */}
       {researchArea.relatedAwards && researchArea.relatedAwards.length > 0 && (
         <div className="mb-12">
-          <h2 className="text-3xl font-bold tracking-tight mb-6">竞赛奖项</h2>
+          <h2 className="text-3xl font-bold tracking-tight mb-6">{t('related_awards')}</h2>
           <ul className="rounded-lg border divide-y">
             {researchArea.relatedAwards.map((a) => (
               <li key={a.id} className="flex items-start justify-between gap-4 p-5 hover:bg-muted/40">
@@ -261,19 +266,19 @@ export default async function ResearchAreaDetailPage({ params }: ResearchAreaDet
           <Button asChild variant="outline">
             <Link href="/research">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              返回研究方向
+              {t('back_to_list')}
             </Link>
           </Button>
           
           <div className="flex gap-4">
             <Button asChild>
               <Link href="/publications">
-                查看所有论文
+                {tPub('view_all_publications')}
               </Link>
             </Button>
             <Button asChild variant="outline">
               <Link href="/contact">
-                联系我们
+                {tCommon('contact_us')}
               </Link>
             </Button>
           </div>

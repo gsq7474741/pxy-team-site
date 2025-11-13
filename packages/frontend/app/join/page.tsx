@@ -1,7 +1,10 @@
 import OpeningCard from "@/components/OpeningCard";
 import { openingApi, type OpeningViewModel } from "@/lib/strapi-client";
+import { getTranslations } from 'next-intl/server';
 
 export default async function JoinUsPage() {
+  const t = await getTranslations('join');
+  const tCommon = await getTranslations('common');
   let openings: OpeningViewModel[] = [];
   try {
     const res = await openingApi.getOpeningList();
@@ -13,7 +16,7 @@ export default async function JoinUsPage() {
   return (
     <div className="max-w-screen-xl mx-auto px-4 md:px-6 py-12">
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold tracking-tight">加入我们</h1>
+        <h1 className="text-4xl font-bold tracking-tight">{t('title')}</h1>
       </div>
       
       <div className="mt-12">
@@ -25,7 +28,7 @@ export default async function JoinUsPage() {
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-muted-foreground">当前暂无开放岗位。</p>
+            <p className="text-muted-foreground">{tCommon('no_data')}</p>
           </div>
         )}
       </div>

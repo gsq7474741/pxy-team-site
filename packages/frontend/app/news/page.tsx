@@ -3,12 +3,16 @@ import Image from "next/image";
 import { newsApi, getStrapiMedia, formatDate, stripHtmlTags, truncateText, type NewsViewModel } from "@/lib/strapi-client";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { getTranslations } from 'next-intl/server';
 
-export const revalidate = 300;
+// 新闻页面缓存：60秒
+export const revalidate = 60;
 
 // 新闻列表页面
 
 export default async function NewsPage() {
+  const t = await getTranslations('news');
+  const tCommon = await getTranslations('common');
   // 获取新闻数据
   let news: NewsViewModel[] = [];
   let pagination = {
@@ -29,7 +33,7 @@ export default async function NewsPage() {
   return (
     <div className="max-w-screen-xl mx-auto px-4 md:px-6 py-12">
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold tracking-tight">新闻动态</h1>
+        <h1 className="text-4xl font-bold tracking-tight">{t('title')}</h1>
       </div>
 
       {news.length > 0 ? (
@@ -60,7 +64,7 @@ export default async function NewsPage() {
               <CardFooter>
                 <Button asChild variant="outline">
                   <Link href={`/news/${item.id}`}>
-                    阅读全文
+                    {t('read_more')}
                   </Link>
                 </Button>
               </CardFooter>
@@ -69,7 +73,7 @@ export default async function NewsPage() {
         </div>
       ) : (
         <div className="text-center py-12">
-          <p className="text-muted-foreground">暂无新闻数据</p>
+          <p className="text-muted-foreground">{tCommon('no_data')}</p>
         </div>
       )}
 

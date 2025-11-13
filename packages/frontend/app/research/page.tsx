@@ -4,8 +4,10 @@ import { researchApi, type ResearchAreaViewModel } from "@/lib/strapi-client";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { getLocale } from "@/lib/server-locale";
+import { getTranslations } from 'next-intl/server';
 
 export default async function ResearchPageComponent() {
+  const t = await getTranslations('research');
   const locale = await getLocale();
   // 获取研究页面数据和研究方向列表
   let researchAreas: ResearchAreaViewModel[] = [];
@@ -21,7 +23,7 @@ export default async function ResearchPageComponent() {
   return (
     <div className="max-w-screen-xl mx-auto px-4 md:px-6 py-12">
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold tracking-tight">研究方向</h1>
+        <h1 className="text-4xl font-bold tracking-tight">{t('title')}</h1>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -49,7 +51,7 @@ export default async function ResearchPageComponent() {
               {/* 显示研究亮点（如果有的话） */}
               {area.researchHighlights && area.researchHighlights.length > 0 && (
                 <div className="mt-4">
-                  <h4 className="font-semibold mb-2">研究亮点：</h4>
+                  <h4 className="font-semibold mb-2">{t('highlights')}:</h4>
                   <ul className="space-y-1">
                     {area.researchHighlights.slice(0, 2).map((highlight, index) => (
                       <li key={index} className="text-sm text-muted-foreground flex items-start">
@@ -77,14 +79,14 @@ export default async function ResearchPageComponent() {
             <CardFooter className="flex justify-between">
               <Button asChild variant="outline">
                 <Link href={`/research/${area.slug}`}>
-                  了解更多
+                  {t('learn_more')}
                 </Link>
               </Button>
               
               {/* 如果有相关论文，显示论文数量 */}
               {area.relatedPublications && area.relatedPublications.length > 0 && (
                 <span className="text-sm text-muted-foreground">
-                  {area.relatedPublications.length} 篇相关论文
+                  {area.relatedPublications.length} {t('related_papers')}
                 </span>
               )}
             </CardFooter>

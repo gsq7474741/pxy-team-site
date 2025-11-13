@@ -4,20 +4,23 @@ import * as React from "react";
 import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
+import { useTranslations } from 'next-intl';
 import LanguageSwitcher from "./LanguageSwitcher";
 
 // 导航项定义
-const navItems = [
-  { name: "首页", href: "/" },
-  { name: "新闻动态", href: "/news" },
-  { name: "研究方向", href: "/research" },
-  { name: "团队成员", href: "/members" },
-  { name: "成果概览", href: "/publications" },
-  { name: "加入我们", href: "/join" },
-  { name: "联系我们", href: "/contact" },
-];
+const navItemsKeys = [
+  { key: "home", href: "/" },
+  { key: "news", href: "/news" },
+  { key: "research", href: "/research" },
+  { key: "members", href: "/members" },
+  { key: "publications", href: "/publications" },
+  { key: "join", href: "/join" },
+  { key: "contact", href: "/contact" },
+] as const;
 
 export default function Navbar() {
+  const t = useTranslations('nav');
+  const tHero = useTranslations('hero');
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -26,18 +29,18 @@ export default function Navbar() {
       <div className="max-w-screen-xl mx-auto flex items-center justify-between h-16 px-4 md:px-6">
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-2">
-          <span className="text-xl font-bold">Prof. Peng 课题组</span>
+          <span className="text-xl font-bold">{tHero('title')}</span>
         </Link>
 
         {/* 桌面导航 */}
         <div className="hidden md:flex md:items-center md:space-x-4 lg:space-x-6">
-          {navItems.map((item) => (
+          {navItemsKeys.map((item) => (
             <Link
-              key={item.name}
+              key={item.key}
               href={item.href}
               className={`px-3 py-2 text-sm transition-colors hover:text-primary ${pathname === item.href ? "text-primary font-medium" : "text-muted-foreground"}`}
             >
-              {item.name}
+              {t(item.key)}
             </Link>
           ))}
           {/* 语言切换器 */}
@@ -85,14 +88,14 @@ export default function Navbar() {
       {mobileMenuOpen && (
         <div className="md:hidden bg-background/95 backdrop-blur-sm border-b">
           <div className="max-w-screen-xl mx-auto py-2 px-4">
-            {navItems.map((item) => (
+            {navItemsKeys.map((item) => (
               <Link
-                key={item.name}
+                key={item.key}
                 href={item.href}
                 className={`block px-3 py-2 text-sm transition-colors hover:text-primary ${pathname === item.href ? "text-primary font-medium" : "text-muted-foreground"}`}
                 onClick={() => setMobileMenuOpen(false)}
               >
-                {item.name}
+                {t(item.key)}
               </Link>
             ))}
           </div>

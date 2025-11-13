@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { ExternalLink, FileText, Code, Calendar, BookOpen, Trophy } from "lucide-react";
 import type { PublicationViewModel, PatentViewModel, AwardViewModel } from "@/lib/types";
 import { useMemo } from "react";
+import { useTranslations } from 'next-intl';
 
 interface Props {
   publications: PublicationViewModel[];
@@ -16,6 +17,8 @@ interface Props {
 }
 
 export default function PublicationsClient({ publications, patents, awards }: Props) {
+  const t = useTranslations('publications');
+  const tCommon = useTranslations('common');
   const searchParams = useSearchParams();
   const activeTab = searchParams.get("type") ?? "publications";
 
@@ -49,29 +52,31 @@ export default function PublicationsClient({ publications, patents, awards }: Pr
   return (
     <div className="max-w-screen-xl mx-auto px-4 md:px-6 py-12">
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold tracking-tight">成果概览</h1>
+        <h1 className="text-4xl font-bold tracking-tight">{t('title')}</h1>
       </div>
 
       {/* 顶部类型 Tabs */}
       <div className="mb-8 overflow-x-auto">
         <div className="flex gap-2 border-b">
-          {[
-            { key: "publications", label: "论文", href: "/publications" },
-            { key: "patents", label: "专利", href: "/publications?type=patents" },
-            { key: "awards", label: "竞赛奖项", href: "/publications?type=awards" },
-          ].map((t) => {
-            const isActive = activeTab === t.key;
-            return (
-              <Link
-                key={t.key}
-                href={t.href}
-                className={`px-4 py-2 text-sm whitespace-nowrap border-b-2 ${isActive ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"}`}
-                aria-current={isActive ? "page" : undefined}
-              >
-                {t.label}
-              </Link>
-            );
-          })}
+          {
+            [
+              { key: "publications", label: t('publications'), href: "/publications" },
+              { key: "patents", label: t('patents'), href: "/publications?type=patents" },
+              { key: "awards", label: t('awards'), href: "/publications?type=awards" },
+            ].map((tab) => {
+              const isActive = activeTab === tab.key;
+              return (
+                <Link
+                  key={tab.key}
+                  href={tab.href}
+                  className={`px-4 py-2 text-sm whitespace-nowrap border-b-2 ${isActive ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"}`}
+                  aria-current={isActive ? "page" : undefined}
+                >
+                  {tab.label}
+                </Link>
+              );
+            })
+          }
         </div>
       </div>
 
@@ -92,32 +97,32 @@ export default function PublicationsClient({ publications, patents, awards }: Pr
                               <CardDescription className="text-base">{pub.authors}</CardDescription>
                             </div>
                             <Badge variant={pub.publicationType === "Journal" ? "default" : "secondary"}>
-                              {pub.publicationType === "Journal" ? "期刊" : "会议"}
+                              {pub.publicationType === "Journal" ? t('journal') : t('conference')}
                             </Badge>
                           </div>
                         </CardHeader>
                         <CardContent className="space-y-3">
                           <div className="flex items-center gap-2 text-sm text-muted-foreground">
                             <BookOpen className="h-4 w-4" />
-                            <span className="font-medium">发表于：</span>
+                            <span className="font-medium">{t('venue')}:</span>
                             <span>{pub.publicationVenue}</span>
                           </div>
                           {pub.volumeIssuePages && (
                             <div className="flex items-center gap-2 text-sm text-muted-foreground">
                               <FileText className="h-4 w-4" />
-                              <span className="font-medium">卷期页：</span>
+                              <span className="font-medium">{t('volume_issue_pages')}:</span>
                               <span>{pub.volumeIssuePages}</span>
                             </div>
                           )}
                           <div className="flex items-center gap-2 text-sm text-muted-foreground">
                             <Calendar className="h-4 w-4" />
-                            <span className="font-medium">年份：</span>
+                            <span className="font-medium">{t('year')}:</span>
                             <span>{pub.year}</span>
                           </div>
                           {pub.abstract && (
                             <div className="mt-3">
                               <p className="text-sm text-muted-foreground line-clamp-3">
-                                <span className="font-medium">摘要：</span>
+                                <span className="font-medium">{t('abstract')}:</span>
                                 {pub.abstract}
                               </p>
                             </div>
@@ -137,7 +142,7 @@ export default function PublicationsClient({ publications, patents, awards }: Pr
                             <Button variant="outline" size="sm" asChild>
                               <Link href={pub.doiLink} target="_blank" rel="noopener noreferrer">
                                 <ExternalLink className="h-4 w-4 mr-2" />
-                                查看论文
+                                {t('view_online')}
                               </Link>
                             </Button>
                           )}
@@ -145,7 +150,7 @@ export default function PublicationsClient({ publications, patents, awards }: Pr
                             <Button variant="outline" size="sm" asChild>
                               <Link href={pub.pdfFile.url} target="_blank" rel="noopener noreferrer">
                                 <FileText className="h-4 w-4 mr-2" />
-                                下载PDF
+                                {t('download_pdf')}
                               </Link>
                             </Button>
                           )}
@@ -153,7 +158,7 @@ export default function PublicationsClient({ publications, patents, awards }: Pr
                             <Button variant="outline" size="sm" asChild>
                               <Link href={pub.codeLink} target="_blank" rel="noopener noreferrer">
                                 <Code className="h-4 w-4 mr-2" />
-                                查看代码
+                                {t('view_code')}
                               </Link>
                             </Button>
                           )}
@@ -170,13 +175,13 @@ export default function PublicationsClient({ publications, patents, awards }: Pr
         {activeTab === "patents" && (
           <section className="space-y-6">
             <div className="space-y-12">
-              {patents.length === 0 && <p className="text-muted-foreground">暂无专利数据。</p>}
+              {patents.length === 0 && <p className="text-muted-foreground">{tCommon('no_data')}</p>}
               {patents.length > 0 && (
                 <>
                   {Object.keys(patentsByYear).length === 0 && <></>}
                   {patentYears.map((py) => (
                     <div key={py} className="space-y-6">
-                      <h3 className="text-2xl font-bold border-b pb-2">{py === "0" ? "其他" : py}</h3>
+                      <h3 className="text-2xl font-bold border-b pb-2">{py === "0" ? tCommon('others') : py}</h3>
                       <div className="space-y-6">
                         {patentsByYear[py].map((p) => (
                           <Card key={p.id} className="transition-all hover:shadow-md">
@@ -198,7 +203,7 @@ export default function PublicationsClient({ publications, patents, awards }: Pr
                             <CardContent className="space-y-3">
                               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                 <Calendar className="h-4 w-4" />
-                                <span className="font-medium">年份：</span>
+                                <span className="font-medium">{t('year')}:</span>
                                 <span>{p.year || "—"}</span>
                               </div>
                               {p.researchAreas && p.researchAreas.length > 0 && (
@@ -216,7 +221,7 @@ export default function PublicationsClient({ publications, patents, awards }: Pr
                                 <Button variant="outline" size="sm" asChild>
                                   <Link href={p.pdfFile.url} target="_blank" rel="noopener noreferrer">
                                     <FileText className="h-4 w-4 mr-2" />
-                                    下载PDF
+                                    {t('download_pdf')}
                                   </Link>
                                 </Button>
                               )}
@@ -224,7 +229,7 @@ export default function PublicationsClient({ publications, patents, awards }: Pr
                                 <Button variant="outline" size="sm" asChild>
                                   <Link href={p.link} target="_blank" rel="noopener noreferrer">
                                     <ExternalLink className="h-4 w-4 mr-2" />
-                                    外部链接
+                                    {tCommon('external_link')}
                                   </Link>
                                 </Button>
                               )}
@@ -243,12 +248,12 @@ export default function PublicationsClient({ publications, patents, awards }: Pr
         {activeTab === "awards" && (
           <section className="space-y-6">
             <div className="space-y-12">
-              {awards.length === 0 && <p className="text-muted-foreground">暂无竞赛奖项。</p>}
+              {awards.length === 0 && <p className="text-muted-foreground">{tCommon('no_data')}</p>}
               {awards.length > 0 && (
                 <>
                   {awardYears.map((ay) => (
                     <div key={ay} className="space-y-6">
-                      <h3 className="text-2xl font-bold border-b pb-2">{ay === "0" ? "其他" : ay}</h3>
+                      <h3 className="text-2xl font-bold border-b pb-2">{ay === "0" ? tCommon('others') : ay}</h3>
                       <div className="space-y-6">
                         {awardsByYear[ay].map((a) => (
                           <Card key={a.id} className="transition-all hover:shadow-md">
@@ -266,12 +271,12 @@ export default function PublicationsClient({ publications, patents, awards }: Pr
                             <CardContent className="space-y-3">
                               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                 <Trophy className="h-4 w-4" />
-                                <span className="font-medium">竞赛：</span>
+                                <span className="font-medium">{t('competition')}:</span>
                                 <span>{a.competitionName || "—"}</span>
                               </div>
                               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                 <Calendar className="h-4 w-4" />
-                                <span className="font-medium">年份：</span>
+                                <span className="font-medium">{t('year')}:</span>
                                 <span>{a.year || "—"}</span>
                               </div>
                               {a.researchAreas && a.researchAreas.length > 0 && (
@@ -289,7 +294,7 @@ export default function PublicationsClient({ publications, patents, awards }: Pr
                                 <Button variant="outline" size="sm" asChild>
                                   <Link href={a.pdfFile.url} target="_blank" rel="noopener noreferrer">
                                     <FileText className="h-4 w-4 mr-2" />
-                                    下载PDF
+                                    {t('download_pdf')}
                                   </Link>
                                 </Button>
                               )}
@@ -297,7 +302,7 @@ export default function PublicationsClient({ publications, patents, awards }: Pr
                                 <Button variant="outline" size="sm" asChild>
                                   <Link href={a.link} target="_blank" rel="noopener noreferrer">
                                     <ExternalLink className="h-4 w-4 mr-2" />
-                                    外部链接
+                                    {tCommon('external_link')}
                                   </Link>
                                 </Button>
                               )}

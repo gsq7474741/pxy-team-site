@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { contactApi, researchApi, type ContactPageViewModel, type ResearchAreaViewModel } from "@/lib/strapi-client";
 import { getLocale } from "@/lib/server-locale";
+import { getTranslations } from 'next-intl/server';
 
 export default async function Footer() {
+  const t = await getTranslations('footer');
   const locale = await getLocale();
   let contact: ContactPageViewModel | null = null;
   let researchAreas: ResearchAreaViewModel[] = [];
@@ -21,30 +23,30 @@ export default async function Footer() {
       <div className="max-w-screen-xl mx-auto px-4 md:px-6 py-8 md:py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-3">
-            <h3 className="text-lg font-semibold">Prof. Peng 课题组</h3>
+            <h3 className="text-lg font-semibold">{t('group_name')}</h3>
             <p className="text-sm text-muted-foreground">
-              探索前沿科技，推动学术创新。
+              {t('tagline')}
             </p>
           </div>
           
           <div className="space-y-3">
-            <h3 className="text-lg font-semibold">快速链接</h3>
+            <h3 className="text-lg font-semibold">{t('quick_links')}</h3>
             <ul className="space-y-2">
               <li>
                 <Link href="https://swu.edu.cn/" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-primary">
-                  西南大学
+                  {t('southwest_university')}
                 </Link>
               </li>
               <li>
                 <Link href="https://ai.swu.edu.cn/" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-primary">
-                  人工智能学院
+                  {t('ai_school')}
                 </Link>
               </li>
             </ul>
           </div>
           
           <div className="space-y-3">
-            <h3 className="text-lg font-semibold">研究领域</h3>
+            <h3 className="text-lg font-semibold">{t('research_areas')}</h3>
             <ul className="space-y-2">
               {(researchAreas || []).sort((a, b) => (a.order ?? 0) - (b.order ?? 0)).slice(0, 4).map((area) => (
                 <li key={area.id}>
@@ -57,7 +59,7 @@ export default async function Footer() {
           </div>
           
           <div className="space-y-3">
-            <h3 className="text-lg font-semibold">联系方式</h3>
+            <h3 className="text-lg font-semibold">{t('contact')}</h3>
             <address className="not-italic">
               <p className="text-sm text-muted-foreground">地址：{contact?.address || '—'}</p>
               <p className="text-sm text-muted-foreground">邮箱：{contact?.email || '—'}</p>

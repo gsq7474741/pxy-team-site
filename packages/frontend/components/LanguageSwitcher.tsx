@@ -29,8 +29,8 @@ export default function LanguageSwitcher() {
   };
 
   const languages = [
-    { code: "zh-CN", name: "中文", icon: "🇨🇳" },
-    { code: "en", name: "English", icon: "🇺🇸" },
+    { code: "zh-CN" as const, name: "中文", icon: "🇨🇳" },
+    { code: "en" as const, name: "English", icon: "🇺🇸" },
   ];
 
   const currentLanguage = languages.find((lang) => lang.code === currentLocale) || languages[0];

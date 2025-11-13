@@ -1,6 +1,7 @@
 import { memberApi, type MemberViewModel } from "@/lib/strapi-client";
 import MembersClient from "@/components/MembersClient";
-export const revalidate = 300;
+// 团队成员页面缓存：60秒
+export const revalidate = 60;
 
 export default async function MembersPage() {
   let members: MemberViewModel[] = [];

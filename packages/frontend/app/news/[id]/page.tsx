@@ -4,8 +4,10 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { newsApi, formatDate, type NewsViewModel } from "@/lib/strapi-client";
 import ShareButtons from "@/components/ShareButtons";
+import { getTranslations } from 'next-intl/server';
 
-export const revalidate = 300;
+// 新闻详情缓存：60秒
+export const revalidate = 60;
 
 // 定义页面参数类型
 interface NewsDetailPageProps {
@@ -25,6 +27,7 @@ export async function generateStaticParams() {
 }
 
 export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
+  const t = await getTranslations('news');
   // Next.js 15 要求 await params
   const { id } = await params;
   
@@ -51,7 +54,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
                 <path d="m15 18-6-6 6-6"/>
               </svg>
-              返回新闻列表
+              {t('back_to_list')}
             </Link>
           </Button>
         </div>
@@ -92,7 +95,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
               {newsDetail.publishDate !== newsDetail.updatedAt && (
                 <>
                   <span className="mx-2">•</span>
-                  <span>更新于 {formatDate(newsDetail.updatedAt)}</span>
+                  <span>{t('updated_at')} {formatDate(newsDetail.updatedAt)}</span>
                 </>
               )}
             </div>
@@ -111,12 +114,12 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
         <footer className="px-6 md:px-12 py-8 bg-gray-50 border-t">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-              <span className="text-sm font-medium text-gray-700">分享这篇文章:</span>
+              <span className="text-sm font-medium text-gray-700">{t('share')}:</span>
               <ShareButtons title={newsDetail.title} />
             </div>
             <Button variant="default" size="sm" asChild className="bg-blue-600 hover:bg-blue-700">
               <Link href="/news">
-                查看更多新闻
+                {t('view_more')}
               </Link>
             </Button>
           </div>

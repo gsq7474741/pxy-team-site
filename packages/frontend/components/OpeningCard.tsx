@@ -1,15 +1,19 @@
+"use client";
+
 import Link from "next/link";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { type OpeningViewModel, formatDate, stripHtmlTags, truncateText } from "@/lib/strapi-client";
 import { Briefcase, MapPin, Calendar } from "lucide-react";
+import { useTranslations } from 'next-intl';
 
 interface OpeningCardProps {
   opening: OpeningViewModel;
 }
 
 export default function OpeningCard({ opening }: OpeningCardProps) {
+  const t = useTranslations('join');
   return (
     <Card className="overflow-hidden transition-all hover:shadow-md">
       <CardHeader>
@@ -34,14 +38,14 @@ export default function OpeningCard({ opening }: OpeningCardProps) {
         {opening.location && (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <MapPin className="h-4 w-4" />
-            <span className="font-medium">地点：</span>
+            <span className="font-medium">{t('location')}:</span>
             <span>{opening.location}</span>
           </div>
         )}
         {opening.deadlineDate && (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Calendar className="h-4 w-4" />
-            <span className="font-medium">截止：</span>
+            <span className="font-medium">{t('deadline')}:</span>
             <span>{formatDate(opening.deadlineDate)}</span>
           </div>
         )}
@@ -55,7 +59,7 @@ export default function OpeningCard({ opening }: OpeningCardProps) {
 
         {opening.requirements && opening.requirements.length > 0 && (
           <div className="mt-4">
-            <h4 className="font-medium">岗位要求</h4>
+            <h4 className="font-medium">{t('requirements')}</h4>
             <ul className="list-disc pl-5 mt-2 space-y-1">
               {opening.requirements.map((req, idx) => (
                 <li key={idx} className="text-sm">{req}</li>
@@ -66,7 +70,7 @@ export default function OpeningCard({ opening }: OpeningCardProps) {
 
         {opening.benefits && opening.benefits.length > 0 && (
           <div className="mt-4">
-            <h4 className="font-medium">福利待遇</h4>
+            <h4 className="font-medium">{t('benefits')}</h4>
             <ul className="list-disc pl-5 mt-2 space-y-1">
               {opening.benefits.map((b, idx) => (
                 <li key={idx} className="text-sm">{b}</li>
@@ -86,12 +90,12 @@ export default function OpeningCard({ opening }: OpeningCardProps) {
       <CardFooter className="flex gap-2">
         {opening.applyLink && opening.status !== 'Closed' && (
           <Button variant="outline" size="sm" asChild>
-            <Link href={opening.applyLink} target="_blank" rel="noopener noreferrer">立即申请</Link>
+            <Link href={opening.applyLink} target="_blank" rel="noopener noreferrer">{t('apply_now')}</Link>
           </Button>
         )}
         {opening.contactEmail && (
           <Button variant="outline" size="sm" asChild>
-            <Link href={`mailto:${opening.contactEmail}`}>联系邮箱</Link>
+            <Link href={`mailto:${opening.contactEmail}`}>{t('contact_email')}</Link>
           </Button>
         )}
       </CardFooter>
