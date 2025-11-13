@@ -11,7 +11,9 @@ export default function HeroSection() {
           Prof. Peng 课题组
           </h1>
           <p className="mt-6 text-lg leading-8 text-muted-foreground">
-            探索前沿科技，推动学术创新。我们致力于在人工智能、机器学习和数据科学领域开展尖端研究，培养下一代科研人才。
+            探索前沿科技，推动学术创新。
+            <br />
+            我们致力于在人工智能、机器学习和数据科学领域开展尖端研究，培养下一代科研人才。
           </p>
         </div>
       </div>

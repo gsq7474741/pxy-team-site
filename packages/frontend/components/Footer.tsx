@@ -1,13 +1,15 @@
 import Link from "next/link";
 import { contactApi, researchApi, type ContactPageViewModel, type ResearchAreaViewModel } from "@/lib/strapi-client";
+import { getLocale } from "@/lib/server-locale";
 
 export default async function Footer() {
+  const locale = await getLocale();
   let contact: ContactPageViewModel | null = null;
   let researchAreas: ResearchAreaViewModel[] = [];
   try {
     const [contactRes, researchRes] = await Promise.all([
       contactApi.getContactPage(),
-      researchApi.getResearchAreaList(1, 100)
+      researchApi.getResearchAreaList(1, 100, locale)
     ]);
     contact = contactRes;
     researchAreas = researchRes.data || [];
@@ -29,23 +31,13 @@ export default async function Footer() {
             <h3 className="text-lg font-semibold">快速链接</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/" className="text-sm text-muted-foreground hover:text-primary">
-                  首页
+                <Link href="https://swu.edu.cn/" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-primary">
+                  西南大学
                 </Link>
               </li>
               <li>
-                <Link href="/news" className="text-sm text-muted-foreground hover:text-primary">
-                  新闻动态
-                </Link>
-              </li>
-              <li>
-                <Link href="/research" className="text-sm text-muted-foreground hover:text-primary">
-                  研究方向
-                </Link>
-              </li>
-              <li>
-                <Link href="/publications" className="text-sm text-muted-foreground hover:text-primary">
-                  成果概览
+                <Link href="https://ai.swu.edu.cn/" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-primary">
+                  人工智能学院
                 </Link>
               </li>
             </ul>

@@ -4,14 +4,16 @@ import HeroSection from "@/components/HeroSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { researchApi, newsApi, type ResearchAreaViewModel, type NewsViewModel, formatDate, stripHtmlTags, truncateText } from "@/lib/strapi-client";
+import { getLocale } from "@/lib/server-locale";
 
 export const revalidate = 300;
 
 export default async function Home() {
+  const locale = await getLocale();
   let researchAreas: ResearchAreaViewModel[] = [];
   let latestNews: NewsViewModel[] = [];
   try {
-    const res = await researchApi.getResearchAreaList(1, 100);
+    const res = await researchApi.getResearchAreaList(1, 100, locale);
     researchAreas = (res.data || []).sort((a, b) => (a.order ?? 0) - (b.order ?? 0)).slice(0, 3);
   } catch (error) {
     console.error("获取研究方向失败:", error);
@@ -38,7 +40,7 @@ export default async function Home() {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {researchAreas.map((area) => (
-              <Card key={area.id} className="transition-all hover:shadow-md">
+              <Card key={area.id} className="transition-all hover:shadow-md flex flex-col">
                 <CardHeader>
                   {area.coverImage?.url ? (
                     <div className="relative w-full h-40 mb-2 overflow-hidden rounded-lg">
@@ -54,7 +56,7 @@ export default async function Home() {
                   )}
                   <CardTitle>{area.title}</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="flex-1">
                   <p className="text-muted-foreground">{area.description}</p>
                 </CardContent>
                 <CardFooter>
@@ -81,12 +83,12 @@ export default async function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {latestNews.length > 0 ? (
               latestNews.map((n) => (
-                <Card key={n.id} className="transition-all hover:shadow-md">
+                <Card key={n.id} className="transition-all hover:shadow-md flex flex-col">
                   <CardHeader>
                     <CardTitle>{n.title}</CardTitle>
                     <CardDescription>{formatDate(n.publishDate)}</CardDescription>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="flex-1">
                     <p className="text-muted-foreground">
                       {truncateText(stripHtmlTags(n.content || ''), 120)}
                     </p>

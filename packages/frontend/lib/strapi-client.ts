@@ -23,6 +23,7 @@ import {
   ResearchAreaViewModel,
   PaginationInfo
 } from './types';
+import { getServerLocale, getLocaleFromAcceptLanguage } from './locale';
 import {
   transformNews,
   transformMember,
@@ -221,12 +222,12 @@ export const awardsApi = {
 export const researchApi = {
 
   // 获取研究方向列表
-  async getResearchAreaList(page = 1, pageSize = 100): Promise<ApiResponse<ResearchAreaViewModel[]>> {
+  async getResearchAreaList(page = 1, pageSize = 100, locale?: string): Promise<ApiResponse<ResearchAreaViewModel[]>> {
     try {
       const researchAreaCollection = client.collection('research-areas');
-      const locale = process.env.NEXT_PUBLIC_STRAPI_LOCALE || 'zh-Hans';
+      const effectiveLocale = locale || getServerLocale();
       const response = await researchAreaCollection.find({
-        locale,
+        locale: effectiveLocale,
         populate: {
           cover_image: { fields: ['*'] },
           related_publications: { populate: '*' },
@@ -258,12 +259,12 @@ export const researchApi = {
   },
 
   // 通过 slug 获取研究方向详情
-  async getResearchAreaBySlug(slug: string): Promise<ResearchAreaViewModel> {
+  async getResearchAreaBySlug(slug: string, locale?: string): Promise<ResearchAreaViewModel> {
     try {
       const researchAreaCollection = client.collection('research-areas');
-      const locale = process.env.NEXT_PUBLIC_STRAPI_LOCALE || 'zh-Hans';
+      const effectiveLocale = locale || getServerLocale();
       const response = await researchAreaCollection.find({
-        locale,
+        locale: effectiveLocale,
         filters: {
           slug: {
             $eq: slug
@@ -301,6 +302,10 @@ export const publicationApi = {
           pageSize,
         },
         sort: ['year:desc'],
+        populate: {
+          pdf_file: { fields: ['*'] },
+          research_areas: { fields: ['*'] }
+        }
       }) as unknown as { data: any[]; meta: { pagination?: any } };
       
       return {

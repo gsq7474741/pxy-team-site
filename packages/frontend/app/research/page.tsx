@@ -3,14 +3,16 @@ import Image from "next/image";
 import { researchApi, type ResearchAreaViewModel } from "@/lib/strapi-client";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { getLocale } from "@/lib/server-locale";
 
 export default async function ResearchPageComponent() {
+  const locale = await getLocale();
   // 获取研究页面数据和研究方向列表
   let researchAreas: ResearchAreaViewModel[] = [];
 
   try {
     // 获取研究方向列表
-    const researchAreasResponse = await researchApi.getResearchAreaList();
+    const researchAreasResponse = await researchApi.getResearchAreaList(1, 100, locale);
     researchAreas = researchAreasResponse.data;
   } catch (error) {
     console.error("获取研究方向数据失败:", error);
@@ -24,7 +26,7 @@ export default async function ResearchPageComponent() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {researchAreas.map((area) => (
-          <Card key={area.id} className="transition-all hover:shadow-md">
+          <Card key={area.id} className="transition-all hover:shadow-md flex flex-col">
             <CardHeader>
               {/* 如果有封面图片，显示图片；否则显示图标 */}
               {area.coverImage?.url ? (
@@ -41,7 +43,7 @@ export default async function ResearchPageComponent() {
               )}
               <CardTitle className="text-2xl">{area.title}</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex-1">
               <p className="text-muted-foreground">{area.description}</p>
               
               {/* 显示研究亮点（如果有的话） */}

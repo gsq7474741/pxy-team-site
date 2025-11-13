@@ -2,24 +2,18 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import type { MemberViewModel } from "@/lib/types";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 
 interface Props {
   members: MemberViewModel[];
 }
 
 export default function MembersClient({ members }: Props) {
-  const [activeRole, setActiveRole] = useState<string>("all");
-
-  useEffect(() => {
-    try {
-      const sp = new URLSearchParams(window.location.search);
-      const role = sp.get("role") ?? "all";
-      setActiveRole(role);
-    } catch {}
-  }, []);
+  const searchParams = useSearchParams();
+  const activeRole = searchParams.get("role") ?? "all";
 
   const roles = useMemo(() => Array.from(new Set((members || []).map((m) => m.role).filter(Boolean))), [members]);
   const tabs = useMemo(() => ["all", ...roles], [roles]);

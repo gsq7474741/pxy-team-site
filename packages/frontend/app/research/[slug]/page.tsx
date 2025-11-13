@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, ExternalLink, FileText, Calendar, Trophy } from "lucide-react";
+import { getLocale } from "@/lib/server-locale";
 
 export const revalidate = 300;
 
@@ -16,11 +17,12 @@ interface ResearchAreaDetailPageProps {
 }
 
 export default async function ResearchAreaDetailPage({ params }: ResearchAreaDetailPageProps) {
+  const locale = await getLocale();
   let researchArea: ResearchAreaViewModel;
 
   try {
     const { slug } = await params;
-    researchArea = await researchApi.getResearchAreaBySlug(slug);
+    researchArea = await researchApi.getResearchAreaBySlug(slug, locale);
   } catch (error) {
     console.error("获取研究方向详情失败:", error);
     notFound();

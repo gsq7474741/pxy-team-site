@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink, FileText, Code, Calendar, BookOpen, Trophy } from "lucide-react";
 import type { PublicationViewModel, PatentViewModel, AwardViewModel } from "@/lib/types";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 
 interface Props {
   publications: PublicationViewModel[];
@@ -15,15 +16,8 @@ interface Props {
 }
 
 export default function PublicationsClient({ publications, patents, awards }: Props) {
-  const [activeTab, setActiveTab] = useState<string>("publications");
-
-  useEffect(() => {
-    try {
-      const sp = new URLSearchParams(window.location.search);
-      const type = sp.get("type") ?? "publications";
-      setActiveTab(type);
-    } catch {}
-  }, []);
+  const searchParams = useSearchParams();
+  const activeTab = searchParams.get("type") ?? "publications";
 
   // 按年份对论文进行分组
   const publicationsByYear: Record<string, PublicationViewModel[]> = {};
