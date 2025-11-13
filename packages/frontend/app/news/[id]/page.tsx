@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { newsApi, formatDate, type NewsViewModel } from "@/lib/strapi-client";
 import ShareButtons from "@/components/ShareButtons";
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, getLocale } from 'next-intl/server';
 
 // 新闻详情缓存：300秒（配合 Webhook 实现实时更新）
 export const revalidate = 300;
@@ -28,6 +28,7 @@ export async function generateStaticParams() {
 
 export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
   const t = await getTranslations('news');
+  const locale = await getLocale();
   // Next.js 15 要求 await params
   const { id } = await params;
   
@@ -35,7 +36,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
   let newsDetail: NewsViewModel | null = null;
   
   try {
-    newsDetail = await newsApi.getNewsById(id);
+    newsDetail = await newsApi.getNewsById(id, locale);
   } catch (error) {
     return notFound();
   }

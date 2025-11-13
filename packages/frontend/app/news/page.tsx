@@ -3,7 +3,7 @@ import Image from "next/image";
 import { newsApi, getStrapiMedia, formatDate, stripHtmlTags, truncateText, type NewsViewModel } from "@/lib/strapi-client";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, getLocale } from 'next-intl/server';
 
 // 新闻页面缓存：300秒（配合 Webhook 实现实时更新）
 export const revalidate = 300;
@@ -13,6 +13,8 @@ export const revalidate = 300;
 export default async function NewsPage() {
   const t = await getTranslations('news');
   const tCommon = await getTranslations('common');
+  const locale = await getLocale();
+  
   // 获取新闻数据
   let news: NewsViewModel[] = [];
   let pagination = {
@@ -23,7 +25,7 @@ export default async function NewsPage() {
   };
 
   try {
-    const response = await newsApi.getNewsList(1, 10);
+    const response = await newsApi.getNewsList(1, 10, locale);
     news = response.data || [];
     pagination = response.pagination || pagination;
   } catch (error) {

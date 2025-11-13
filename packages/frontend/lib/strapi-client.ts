@@ -59,7 +59,7 @@ interface ApiResponse<T> {
 // 新闻相关 API
 export const newsApi = {
   // 获取新闻列表
-  async getNewsList(page = 1, pageSize = 10): Promise<ApiResponse<NewsViewModel[]>> {
+  async getNewsList(page = 1, pageSize = 10, locale?: string): Promise<ApiResponse<NewsViewModel[]>> {
     try {
       // 尝试不同的 collection 名称
       let newsCollection;
@@ -69,7 +69,9 @@ export const newsApi = {
         newsCollection = client.collection('news');
       }
       
+      const effectiveLocale = locale || getServerLocale();
       const response = await newsCollection.find({
+        locale: effectiveLocale,
         pagination: {
           page,
           pageSize,
@@ -95,7 +97,7 @@ export const newsApi = {
   },
 
   // 获取新闻详情
-  async getNewsById(id: string): Promise<NewsViewModel> {
+  async getNewsById(id: string, locale?: string): Promise<NewsViewModel> {
     try {
       // 尝试不同的 collection 名称
       let newsCollection;
@@ -105,12 +107,15 @@ export const newsApi = {
         newsCollection = client.collection('news');
       }
       
+      const effectiveLocale = locale || getServerLocale();
+      
       // 尝试多种 populate 语法
       
       let response;
       try {
         // 方法1：使用深度 populate 语法获取完整媒体信息
         response = await newsCollection.findOne(id, {
+          locale: effectiveLocale,
           populate: {
             cover_image: {
               fields: ['*']
@@ -148,10 +153,12 @@ export const newsApi = {
 // 团队成员相关 API
 export const memberApi = {
   // 获取团队成员列表
-  async getMemberList(page = 1, pageSize = 100): Promise<ApiResponse<MemberViewModel[]>> {
+  async getMemberList(page = 1, pageSize = 100, locale?: string): Promise<ApiResponse<MemberViewModel[]>> {
     try {
       const memberCollection = client.collection('members');
+      const effectiveLocale = locale || getServerLocale();
       const response = await memberCollection.find({
+        locale: effectiveLocale,
         pagination: {
           page,
           pageSize,
@@ -171,10 +178,12 @@ export const memberApi = {
   },
 
   // 通过 slug 获取团队成员详情
-  async getMemberBySlug(slug: string): Promise<MemberViewModel> {
+  async getMemberBySlug(slug: string, locale?: string): Promise<MemberViewModel> {
     try {
       const memberCollection = client.collection('members');
+      const effectiveLocale = locale || getServerLocale();
       const response = await memberCollection.find({
+        locale: effectiveLocale,
         filters: {
           slug: {
             $eq: slug,
@@ -197,10 +206,12 @@ export const memberApi = {
 
 // 竞赛奖项相关 API
 export const awardsApi = {
-  async getAwardList(page = 1, pageSize = 100): Promise<ApiResponse<AwardViewModel[]>> {
+  async getAwardList(page = 1, pageSize = 100, locale?: string): Promise<ApiResponse<AwardViewModel[]>> {
     try {
       const awardCollection = client.collection('awards');
+      const effectiveLocale = locale || getServerLocale();
       const response = await awardCollection.find({
+        locale: effectiveLocale,
         pagination: { page, pageSize },
         sort: ['year:desc', 'createdAt:desc'],
         populate: {
@@ -293,10 +304,12 @@ export const researchApi = {
 // 论文成果相关 API
 export const publicationApi = {
   // 获取论文成果列表
-  async getPublicationList(page = 1, pageSize = 100): Promise<ApiResponse<PublicationViewModel[]>> {
+  async getPublicationList(page = 1, pageSize = 100, locale?: string): Promise<ApiResponse<PublicationViewModel[]>> {
     try {
       const publicationCollection = client.collection('publications');
+      const effectiveLocale = locale || getServerLocale();
       const response = await publicationCollection.find({
+        locale: effectiveLocale,
         pagination: {
           page,
           pageSize,
@@ -321,10 +334,12 @@ export const publicationApi = {
 
 // 招聘岗位相关 API
 export const openingApi = {
-  async getOpeningList(page = 1, pageSize = 100): Promise<ApiResponse<OpeningViewModel[]>> {
+  async getOpeningList(page = 1, pageSize = 100, locale?: string): Promise<ApiResponse<OpeningViewModel[]>> {
     try {
       const openingCollection = client.collection('openings');
+      const effectiveLocale = locale || getServerLocale();
       const response = await openingCollection.find({
+        locale: effectiveLocale,
         pagination: { page, pageSize },
         sort: ['order:asc', 'createdAt:desc'],
         populate: {
@@ -341,10 +356,12 @@ export const openingApi = {
     }
   },
 
-  async getOpeningBySlug(slug: string): Promise<OpeningViewModel> {
+  async getOpeningBySlug(slug: string, locale?: string): Promise<OpeningViewModel> {
     try {
       const openingCollection = client.collection('openings');
+      const effectiveLocale = locale || getServerLocale();
       const response = await openingCollection.find({
+        locale: effectiveLocale,
         filters: { slug: { $eq: slug } },
         populate: {
           research_areas: { fields: ['*'] }
@@ -363,10 +380,12 @@ export const openingApi = {
 
 // 专利相关 API
 export const patentsApi = {
-  async getPatentList(page = 1, pageSize = 100): Promise<ApiResponse<PatentViewModel[]>> {
+  async getPatentList(page = 1, pageSize = 100, locale?: string): Promise<ApiResponse<PatentViewModel[]>> {
     try {
       const patentCollection = client.collection('patents');
+      const effectiveLocale = locale || getServerLocale();
       const response = await patentCollection.find({
+        locale: effectiveLocale,
         pagination: { page, pageSize },
         sort: ['year:desc', 'createdAt:desc'],
         populate: {
@@ -387,10 +406,11 @@ export const patentsApi = {
 // 联系页面相关 API
 export const contactApi = {
   // 获取联系页面内容
-  async getContactPage(): Promise<ContactPageViewModel> {
+  async getContactPage(locale?: string): Promise<ContactPageViewModel> {
     try {
       const contactSingle = client.single('contact-page');
-      const response = await contactSingle.find({}) as unknown as any;
+      const effectiveLocale = locale || getServerLocale();
+      const response = await contactSingle.find({ locale: effectiveLocale }) as unknown as any;
       
       if (response.data) {
         return transformPageData(response.data, 'contact') as ContactPageViewModel;
@@ -421,10 +441,11 @@ export const contactApi = {
 // 加入我们页面相关 API
 export const joinUsApi = {
   // 获取加入我们页面内容
-  async getJoinUsPage(): Promise<JoinUsPageViewModel> {
+  async getJoinUsPage(locale?: string): Promise<JoinUsPageViewModel> {
     try {
       const joinUsSingle = client.single('join-us-page');
-      const response = await joinUsSingle.find({}) as unknown as any;
+      const effectiveLocale = locale || getServerLocale();
+      const response = await joinUsSingle.find({ locale: effectiveLocale }) as unknown as any;
       
       if (response.data) {
         return transformPageData(response.data, 'join-us') as JoinUsPageViewModel;
@@ -441,10 +462,11 @@ export const joinUsApi = {
 // 专利页面相关 API
 export const patentApi = {
   // 获取专利页面内容
-  async getPatentPage(): Promise<PatentPageViewModel> {
+  async getPatentPage(locale?: string): Promise<PatentPageViewModel> {
     try {
       const patentSingle = client.single('patent-page');
-      const response = await patentSingle.find({}) as unknown as any;
+      const effectiveLocale = locale || getServerLocale();
+      const response = await patentSingle.find({ locale: effectiveLocale }) as unknown as any;
       
       if (response.data) {
         return transformPageData(response.data, 'patent') as PatentPageViewModel;
@@ -461,10 +483,11 @@ export const patentApi = {
 // 招聘页面相关 API
 export const recruitApi = {
   // 获取招聘页面内容
-  async getRecruitPage(): Promise<RecruitPageViewModel> {
+  async getRecruitPage(locale?: string): Promise<RecruitPageViewModel> {
     try {
       const recruitSingle = client.single('recruit-page');
-      const response = await recruitSingle.find({}) as unknown as any;
+      const effectiveLocale = locale || getServerLocale();
+      const response = await recruitSingle.find({ locale: effectiveLocale }) as unknown as any;
       
       if (response.data) {
         return transformPageData(response.data, 'recruit') as RecruitPageViewModel;

@@ -18,6 +18,26 @@ export default function MembersClient({ members }: Props) {
   const searchParams = useSearchParams();
   const activeRole = searchParams.get("role") ?? "all";
 
+  // 翻译角色名称的辅助函数
+  const translateRole = (role: string) => {
+    // 将后端角色名称映射到翻译键（移除点和空格，避免 next-intl 报错）
+    const roleKeyMap: Record<string, string> = {
+      'Ph.D. Student': 'PhD_Student',
+      'Master Student': 'Master_Student',
+      'Supervisor': 'Supervisor',
+      'Alumni': 'Alumni'
+    };
+    
+    const translationKey = roleKeyMap[role] || role;
+    
+    // 尝试从翻译文件中获取，如果不存在则返回原始值
+    try {
+      return t(`roles.${translationKey}`);
+    } catch {
+      return role;
+    }
+  };
+
   const roles = useMemo(() => Array.from(new Set((members || []).map((m) => m.role).filter(Boolean))), [members]);
   const tabs = useMemo(() => ["all", ...roles], [roles]);
   const filteredMembers = useMemo(() => (activeRole === "all" ? members : members.filter((m) => m.role === activeRole)), [activeRole, members]);
@@ -33,7 +53,7 @@ export default function MembersClient({ members }: Props) {
           {tabs.map((r) => {
             const isActive = activeRole === r;
             const href = r === "all" ? "/members" : `/members?role=${encodeURIComponent(r)}`;
-            const label = r === "all" ? t('all') : r;
+            const label = r === "all" ? t('all') : translateRole(r);
             return (
               <Link
                 key={r}
@@ -66,7 +86,7 @@ export default function MembersClient({ members }: Props) {
                 </CardHeader>
                 <CardContent className="pt-6">
                   <h3 className="text-xl font-semibold">{member.name}</h3>
-                  <p className="text-muted-foreground">{member.role}</p>
+                  <p className="text-muted-foreground">{translateRole(member.role)}</p>
                   <p className="mt-2 line-clamp-3">{member.bio}</p>
                 </CardContent>
                 <CardFooter>

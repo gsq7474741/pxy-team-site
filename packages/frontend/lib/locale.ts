@@ -8,11 +8,13 @@
  * 
  * 策略：
  * 1. 所有中文变体（zh-CN, zh-TW, zh-HK, zh-Hans, zh-Hant 等）→ zh-CN
- * 2. 所有其他语言（en, ja, ko, fr 等）→ en
+ * 2. 所有日语变体（ja, ja-JP 等）→ ja
+ * 3. 所有其他语言（en, ko, fr 等）→ en
  * 
  * 这样确保：
  * - 中文用户（大陆/台湾/香港/新加坡等）都能看到中文内容
- * - 非中文用户都看到英文内容
+ * - 日语用户都能看到日语内容
+ * - 其他语言用户都看到英文内容
  */
 export function normalizeLocale(locale: string): string {
   if (!locale) return 'zh-CN';
@@ -26,9 +28,13 @@ export function normalizeLocale(locale: string): string {
     return 'zh-CN';
   }
   
-  // 所有非中文语言映射到英文
-  // 注意：后续如果后端添加了其他语言版本（如日语、韩语），
-  // 可以在这里添加更精细的映射
+  // 检查是否为日语变体（任何以 ja 开头的 locale）
+  if (normalized.startsWith('ja')) {
+    // 所有日语变体统一映射到 ja（日语）
+    return 'ja';
+  }
+  
+  // 所有其他语言映射到英文
   return 'en';
 }
 
@@ -120,8 +126,8 @@ function getCookie(name: string): string | null {
 /**
  * 支持的语言列表
  * 
- * 注意：这里只定义后端实际支持的 locale
- * 前端会通过 normalizeLocale() 将用户的各种语言映射到这两个
+ * 注意：这里只定义前端实际支持的 locale
+ * 前端会通过 normalizeLocale() 将用户的各种语言映射到这些支持的语言
  */
 export const SUPPORTED_LOCALES = {
   'zh-CN': {
@@ -130,11 +136,17 @@ export const SUPPORTED_LOCALES = {
     englishName: 'Simplified Chinese',
     description: '适用于所有中文用户（大陆、台湾、香港、新加坡等）',
   },
+  'ja': {
+    code: 'ja',
+    name: '日本語',
+    englishName: 'Japanese',
+    description: '日本語ユーザー向け (For Japanese users)',
+  },
   'en': {
     code: 'en',
     name: 'English',
     englishName: 'English',
-    description: 'For all non-Chinese users',
+    description: 'For all other users',
   },
 } as const;
 

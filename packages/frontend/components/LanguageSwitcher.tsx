@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 /**
  * 语言切换组件
- * 支持中文(zh-CN)和英文(en)切换
+ * 支持中文(zh-CN)、日语(ja)和英文(en)切换
  */
 export default function LanguageSwitcher() {
   const [currentLocale, setCurrentLocale] = useState<string>("zh-CN");
@@ -30,6 +30,7 @@ export default function LanguageSwitcher() {
 
   const languages = [
     { code: "zh-CN" as const, name: "中文", icon: "🇨🇳" },
+    { code: "ja" as const, name: "日本語", icon: "🇯🇵" },
     { code: "en" as const, name: "English", icon: "🇺🇸" },
   ];
 

@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { memberApi, getStrapiMedia, type MemberViewModel } from "@/lib/strapi-client";
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, getLocale } from 'next-intl/server';
 
 // 成员详情页面参数类型
 interface MemberPageProps {
@@ -24,11 +24,12 @@ export async function generateStaticParams() {
 
 export default async function MemberDetailPage({ params }: MemberPageProps) {
   const t = await getTranslations('members');
+  const locale = await getLocale();
   const { slug } = await params;
   let member: MemberViewModel | null = null;
 
   try {
-    member = await memberApi.getMemberBySlug(slug);
+    member = await memberApi.getMemberBySlug(slug, locale);
   } catch (error) {
     console.error("获取成员数据失败:", error);
   }
@@ -40,6 +41,25 @@ export default async function MemberDetailPage({ params }: MemberPageProps) {
 
   // 获取成员信息
   const { name, englishName, role, bio, email, photo, enrollmentYear, enrollmentStatus } = member;
+  
+  // 翻译角色名称
+  const translateRole = (role: string) => {
+    // 将后端角色名称映射到翻译键（移除点和空格，避免 next-intl 报错）
+    const roleKeyMap: Record<string, string> = {
+      'Ph.D. Student': 'PhD_Student',
+      'Master Student': 'Master_Student',
+      'Supervisor': 'Supervisor',
+      'Alumni': 'Alumni'
+    };
+    
+    const translationKey = roleKeyMap[role] || role;
+    
+    try {
+      return t(`roles.${translationKey}`);
+    } catch {
+      return role;
+    }
+  };
   
   // 将可能的字符串字段转换为数组以便在UI中展示
   const researchInterests = member.researchInterests ? member.researchInterests.split('\n').filter(Boolean) : [];
@@ -74,7 +94,7 @@ export default async function MemberDetailPage({ params }: MemberPageProps) {
           
           <div className="space-y-2">
             <h1 className="text-2xl font-bold">{name}</h1>
-            <p className="text-lg text-muted-foreground">{role}</p>
+            <p className="text-lg text-muted-foreground">{translateRole(role)}</p>
             {email && (
               <p className="text-sm">
                 <span className="font-medium">{t('email')}:</span> {email}

@@ -72,7 +72,13 @@
     "bio": "Biography",
     "research_interests": "Research Interests",
     "education": "Education",
-    "publications": "Representative Publications"
+    "publications": "Representative Publications",
+    "roles": {
+      "Supervisor": "Supervisor",
+      "PhD_Student": "Ph.D. Student",
+      "Master_Student": "Master Student",
+      "Alumni": "Alumni"
+    }
   },
   "join": {
     "title": "Join Us",

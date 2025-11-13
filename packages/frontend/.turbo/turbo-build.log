@@ -1,122 +1,0 @@
-
-> frontend@0.1.0 build /Users/songqi/WindsurfProjects/pxy-team-site/packages/frontend
-> next build
-
-   [1m[38;2;173;127;168m▲ Next.js 15.4.1[39m[22m
-   - Environments: .env
-
- [37m[1m [22m[39m Creating an optimized production build ...
- [32m[1m✓[22m[39m Compiled successfully in 1000ms
-[?25l [37m[1m [22m[39m Linting and checking validity of types  [36m.[39m[2K[1G [37m[1m [22m[39m Linting and checking validity of types  [36m..[39m[2K[1G [37m[1m [22m[39m Linting and checking validity of types  [36m...[39m[2K[1G [37m[1m [22m[39m Linting and checking validity of types  [36m.[39m[2K[1G [37m[1m [22m[39m Linting and checking validity of types  [36m..[39m[2K[1G [37m[1m [22m[39m Linting and checking validity of types  [36m...[39m[2K[1G[?25h
-./app/members/[slug]/page.tsx
-19:12  Warning: 'e' is defined but never used.  @typescript-eslint/no-unused-vars
-40:17  Warning: 'englishName' is assigned a value but never used.  @typescript-eslint/no-unused-vars
-40:55  Warning: 'enrollmentYear' is assigned a value but never used.  @typescript-eslint/no-unused-vars
-40:71  Warning: 'enrollmentStatus' is assigned a value but never used.  @typescript-eslint/no-unused-vars
-
-./app/news/[id]/page.tsx
-20:12  Warning: 'e' is defined but never used.  @typescript-eslint/no-unused-vars
-34:12  Warning: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
-
-./app/news/page.tsx
-3:19  Warning: 'getStrapiMedia' is defined but never used.  @typescript-eslint/no-unused-vars
-
-./app/research/[slug]/page.tsx
-5:29  Warning: 'CardDescription' is defined but never used.  @typescript-eslint/no-unused-vars
-307:12  Warning: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
-
-./app/research/page.tsx
-4:29  Warning: 'CardDescription' is defined but never used.  @typescript-eslint/no-unused-vars
-
-./components/PublicationsClient.tsx
-29:9  Warning: The 'publicationsByYear' object makes the dependencies of useMemo Hook (at line 35) change on every render. To fix this, wrap the initialization of 'publicationsByYear' in its own useMemo() Hook.  react-hooks/exhaustive-deps
-38:9  Warning: The 'patentsByYear' object makes the dependencies of useMemo Hook (at line 44) change on every render. To fix this, wrap the initialization of 'patentsByYear' in its own useMemo() Hook.  react-hooks/exhaustive-deps
-47:9  Warning: The 'awardsByYear' object makes the dependencies of useMemo Hook (at line 53) change on every render. To fix this, wrap the initialization of 'awardsByYear' in its own useMemo() Hook.  react-hooks/exhaustive-deps
-
-./components/ShareButtons.tsx
-58:20  Warning: 'e' is defined but never used.  @typescript-eslint/no-unused-vars
-88:15  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
-
-./lib/strapi-client.ts
-8:3  Warning: 'StrapiResponse' is defined but never used.  @typescript-eslint/no-unused-vars
-9:3  Warning: 'StrapiData' is defined but never used.  @typescript-eslint/no-unused-vars
-10:3  Warning: 'NewsAttributes' is defined but never used.  @typescript-eslint/no-unused-vars
-11:3  Warning: 'MemberAttributes' is defined but never used.  @typescript-eslint/no-unused-vars
-12:3  Warning: 'PublicationAttributes' is defined but never used.  @typescript-eslint/no-unused-vars
-29:3  Warning: 'transformPublication' is defined but never used.  @typescript-eslint/no-unused-vars
-37:3  Warning: 'transformAwardList' is defined but never used.  @typescript-eslint/no-unused-vars
-67:16  Warning: 'e' is defined but never used.  @typescript-eslint/no-unused-vars
-103:16  Warning: 'e' is defined but never used.  @typescript-eslint/no-unused-vars
-119:16  Warning: 'e1' is defined but never used.  @typescript-eslint/no-unused-vars
-125:18  Warning: 'e2' is defined but never used.  @typescript-eslint/no-unused-vars
-
-./lib/transformers.ts
-7:3  Warning: 'StrapiData' is defined but never used.  @typescript-eslint/no-unused-vars
-8:3  Warning: 'NewsAttributes' is defined but never used.  @typescript-eslint/no-unused-vars
-9:3  Warning: 'MemberAttributes' is defined but never used.  @typescript-eslint/no-unused-vars
-10:3  Warning: 'PublicationAttributes' is defined but never used.  @typescript-eslint/no-unused-vars
-
-info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
-[?25l [36m.[39m [2K[1G [36m..[39m [2K[1G [36m...[39m [2K[1G[?25h    [32m[1m✓[22m[39m Linting and checking validity of types 
-[?25l [37m[1m [22m[39m Collecting page data  [36m.[39m[2K[1G [37m[1m [22m[39m Collecting page data  [36m..[39m[2K[1G[?25h [37m[1m [22m[39m Collecting page data     [32m[1m✓[22m[39m Collecting page data 
-[?25l [37m[1m [22m[39m Generating static pages (0/21)  [36m[    ][39m[2K[1G [37m[1m [22m[39m Generating static pages (0/21)  [36m[=   ][39m[2K[1G[?25h获取专利页面内容失败: Error [HTTPNotFoundError]: Request failed with status code 404 Not Found: GET http://localhost:1337/api/patent-page
-    at <unknown> (HTTPNotFoundError: Request failed with status code 404 Not Found: GET http://localhost:1337/api/patent-page)
-    at bA.mapResponseToHTTPError (.next/server/chunks/829.js:1:64399)
-    at Object.fulfilled (.next/server/chunks/829.js:1:65259)
-    at by.execute (.next/server/chunks/829.js:1:61918)
-    at bA.request (.next/server/chunks/829.js:1:63388)
-    at async bj.find (.next/server/chunks/829.js:1:55137)
-    at async Object.getPatentPage (.next/server/chunks/922.js:1:10734)
-    at async j (.next/server/app/patent/page.js:1:301) {
-  response: [Response],
-  request: [Request]
-}
-获取专利页面内容失败: Error [HTTPNotFoundError]: Request failed with status code 404 Not Found: GET http://localhost:1337/api/patent-page
-    at <unknown> (HTTPNotFoundError: Request failed with status code 404 Not Found: GET http://localhost:1337/api/patent-page)
-    at bA.mapResponseToHTTPError (.next/server/chunks/829.js:1:64399)
-    at Object.fulfilled (.next/server/chunks/829.js:1:65259)
-    at by.execute (.next/server/chunks/829.js:1:61918)
-    at bA.request (.next/server/chunks/829.js:1:63388)
-    at async bj.find (.next/server/chunks/829.js:1:55137)
-    at async Object.getPatentPage (.next/server/chunks/922.js:1:10734)
-    at async j (.next/server/app/patent/page.js:1:301) {
-  response: [Response],
-  request: [Request]
-}
-[?25h [32m[1m✓[22m[39m Generating static pages (21/21)
-[?25l [37m[1m [22m[39m Finalizing page optimization  [36m.[39m[?25l [37m[1m [22m[39m Collecting build traces  [36m.[39m[2K[1G [37m[1m [22m[39m Finalizing page optimization  [36m..[39m[2K[1G [37m[1m [22m[39m Collecting build traces  [36m..[39m[2K[1G [37m[1m [22m[39m Finalizing page optimization  [36m...[39m[2K[1G [37m[1m [22m[39m Collecting build traces  [36m...[39m[2K[1G [37m[1m [22m[39m Finalizing page optimization  [36m.[39m[2K[1G [37m[1m [22m[39m Collecting build traces  [36m.[39m[2K[1G [37m[1m [22m[39m Finalizing page optimization  [36m..[39m[2K[1G [37m[1m [22m[39m Collecting build traces  [36m..[39m[2K[1G [37m[1m [22m[39m Finalizing page optimization  [36m...[39m[2K[1G [37m[1m [22m[39m Collecting build traces  [36m...[39m[2K[1G [37m[1m [22m[39m Finalizing page optimization  [36m.[39m[2K[1G [37m[1m [22m[39m Collecting build traces  [36m.[39m[2K[1G [37m[1m [22m[39m Finalizing page optimization  [36m..[39m[2K[1G [37m[1m [22m[39m Collecting build traces  [36m..[39m[2K[1G [37m[1m [22m[39m Finalizing page optimization  [36m...[39m[2K[1G [37m[1m [22m[39m Collecting build traces  [36m...[39m[2K[1G [37m[1m [22m[39m Finalizing page optimization  [36m.[39m[2K[1G [37m[1m [22m[39m Collecting build traces  [36m.[39m[2K[1G [37m[1m [22m[39m Finalizing page optimization  [36m..[39m[2K[1G [37m[1m [22m[39m Collecting build traces  [36m..[39m[2K[1G[?25h [37m[1m [22m[39m Collecting build traces     [32m[1m✓[22m[39m Collecting build traces 
-[?25l [37m[1m [22m[39m Exporting (0/3)  [36m[    ][39m[2K[1G [37m[1m [22m[39m Finalizing page optimization  [36m...[39m[2K[1G[?25h[2K[1G[?25h [32m[1m✓[22m[39m Exporting (3/3)
-[?25l [36m.[39m [2K[1G[?25h    [32m[1m✓[22m[39m Finalizing page optimization 
-
-[4mRoute (app)[24m                                 [4mSize[24m  [4mFirst Load JS[24m  [4m[24m  [4m[24m
-┌ ○ /                                       1 kB         [37m[1m110 kB[22m[39m
-├ ○ /_not-found                            991 B         [37m[1m101 kB[22m[39m
-├ ○ /contact                             27.9 kB         [37m[1m136 kB[22m[39m
-├ ○ /join                                  167 B         [37m[1m104 kB[22m[39m
-├ ○ /members                             1.91 kB         [37m[1m118 kB[22m[39m
-├ ● /members/[slug]                        182 B         [37m[1m109 kB[22m[39m
-├   ├ /members/pxy
-├   ├ /members/zxy
-├   └ /members/1
-├ ○ /news                                  182 B         [37m[1m109 kB[22m[39m
-├ ● /news/[id]                           3.91 kB         [37m[1m120 kB[22m[39m
-├   ├ /news/eqyv5cd0ufiagtaarai4kog9
-├   └ /news/cr3wzpd8usvwxzpgwqnnra3v
-├ ○ /patent                                167 B         [37m[1m104 kB[22m[39m
-├ ○ /publications                        5.13 kB         [37m[1m116 kB[22m[39m
-├ ○ /recruit                               167 B         [37m[1m104 kB[22m[39m
-├ ○ /research                              182 B         [37m[1m109 kB[22m[39m
-├ ● /research/[slug]                       182 B         [37m[1m109 kB[22m[39m
-├   ├ /research/enose
-├   └ /research/ic
-└ ○ /test-strapi                           123 B         [37m[1m100 kB[22m[39m
-+ First Load JS shared by all             [37m[1m100 kB[22m[39m
-  ├ chunks/260-0b17baa48da225af.js       44.1 kB
-  ├ chunks/33a80eac-134ff5cdd9cf1055.js  54.1 kB
-  └ other shared chunks (total)          1.93 kB
-
-
-○  (Static)  prerendered as static content
-●  (SSG)     prerendered as static HTML (uses [36mgenerateStaticParams[39m)
-
-[?25h

@@ -19,6 +19,8 @@
 
 # turbo
 .turbo/*
+packages/*/.turbo/*
+
 
 # production
 /build

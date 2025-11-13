@@ -72,7 +72,13 @@
     "bio": "个人简介",
     "research_interests": "研究兴趣",
     "education": "教育背景",
-    "publications": "代表性成果"
+    "publications": "代表性成果",
+    "roles": {
+      "Supervisor": "导师",
+      "PhD_Student": "博士生",
+      "Master_Student": "硕士生",
+      "Alumni": "校友"
+    }
   },
   "join": {
     "title": "加入我们",
