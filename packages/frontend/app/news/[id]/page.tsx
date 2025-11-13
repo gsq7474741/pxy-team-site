@@ -6,8 +6,8 @@ import { newsApi, formatDate, type NewsViewModel } from "@/lib/strapi-client";
 import ShareButtons from "@/components/ShareButtons";
 import { getTranslations } from 'next-intl/server';
 
-// 新闻详情缓存：60秒
-export const revalidate = 60;
+// 新闻详情缓存：300秒（配合 Webhook 实现实时更新）
+export const revalidate = 300;
 
 // 定义页面参数类型
 interface NewsDetailPageProps {

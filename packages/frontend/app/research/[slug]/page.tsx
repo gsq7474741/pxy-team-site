@@ -9,8 +9,8 @@ import { ArrowLeft, ExternalLink, FileText, Calendar, Trophy } from "lucide-reac
 import { getLocale } from "@/lib/server-locale";
 import { getTranslations } from 'next-intl/server';
 
-// 研究方向详情缓存：60秒
-export const revalidate = 60;
+// 研究方向详情缓存：300秒（配合 Webhook 实现实时更新）
+export const revalidate = 300;
 
 interface ResearchAreaDetailPageProps {
   params: Promise<{
