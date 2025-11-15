@@ -25,7 +25,7 @@
       "type": "text",
       "pluginOptions": { "i18n": { "localized": true } }
     },
-    "competition_name": {
+    "supervisor": {
       "type": "string",
       "pluginOptions": { "i18n": { "localized": true } }
     },

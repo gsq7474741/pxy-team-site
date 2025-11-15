@@ -59,6 +59,7 @@
     "status": "Status",
     "recipients": "Recipients",
     "competition": "Competition",
+    "supervisor": "Supervisor",
     "rank": "Award Rank",
     "date": "Award Date"
   },

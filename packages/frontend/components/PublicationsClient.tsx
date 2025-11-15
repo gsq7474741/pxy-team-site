@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, FileText, Code, Calendar, BookOpen, Trophy } from "lucide-react";
+import { ExternalLink, FileText, Code, Calendar, BookOpen, Lightbulb } from "lucide-react";
 import type { PublicationViewModel, PatentViewModel, AwardViewModel } from "@/lib/types";
 import { useMemo } from "react";
 import { useTranslations } from 'next-intl';
@@ -261,8 +261,8 @@ export default function PublicationsClient({ publications, patents, awards }: Pr
                               <div className="flex items-start justify-between gap-4">
                                 <div className="flex-1">
                                   <CardTitle className="text-lg leading-tight mb-2">{a.title}</CardTitle>
-                                  {(a.recipients || a.competitionName) && (
-                                    <CardDescription className="text-base">{[a.recipients, a.competitionName].filter(Boolean).join(" ｜ ")}</CardDescription>
+                                  {a.recipients && (
+                                    <CardDescription className="text-base">{a.recipients}</CardDescription>
                                   )}
                                 </div>
                                 {a.awardRank && <Badge variant="default">{a.awardRank}</Badge>}
@@ -270,9 +270,9 @@ export default function PublicationsClient({ publications, patents, awards }: Pr
                             </CardHeader>
                             <CardContent className="space-y-3">
                               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                <Trophy className="h-4 w-4" />
-                                <span className="font-medium">{t('competition')}:</span>
-                                <span>{a.competitionName || "—"}</span>
+                                <Lightbulb className="h-4 w-4" />
+                                <span className="font-medium">{t('supervisor')}:</span>
+                                <span>{a.supervisor || "—"}</span>
                               </div>
                               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                 <Calendar className="h-4 w-4" />

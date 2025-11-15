@@ -222,8 +222,8 @@ export default async function ResearchAreaDetailPage({ params }: ResearchAreaDet
               <li key={a.id} className="flex items-start justify-between gap-4 p-5 hover:bg-muted/40">
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold mb-2">{a.title}</h3>
-                  {(a.recipients || a.competitionName) && (
-                    <p className="text-muted-foreground mb-2">{[a.recipients, a.competitionName].filter(Boolean).join(' ｜ ')}</p>
+                  {(a.recipients || a.supervisor) && (
+                    <p className="text-muted-foreground mb-2">{[a.recipients, a.supervisor].filter(Boolean).join(' ｜ ')}</p>
                   )}
                   <div className="flex items-center gap-4 text-sm text-muted-foreground">
                     <div className="flex items-center gap-1">

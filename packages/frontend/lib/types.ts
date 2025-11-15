@@ -165,7 +165,7 @@ export interface AwardViewModel {
   id: string;
   title: string;
   recipients?: string;
-  competitionName?: string;
+  supervisor?: string;
   awardRank?: string;
   year?: string;
   date?: string;

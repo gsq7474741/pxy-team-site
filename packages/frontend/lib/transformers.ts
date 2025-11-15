@@ -44,7 +44,7 @@ export const transformAward = (strapiAward: any): AwardViewModel => {
     id: id?.toString() || '',
     title: data?.title || '',
     recipients: data?.recipients,
-    competitionName: data?.competition_name,
+    supervisor: data?.supervisor,
     awardRank: data?.award_rank,
     year: data?.year?.toString() || '',
     date: data?.date || '',
