@@ -88,7 +88,12 @@
     "requirements": "Requirements",
     "benefits": "Benefits",
     "apply_now": "Apply Now",
-    "contact_email": "Contact Email"
+    "contact_email": "Contact Email",
+    "back_to_list": "Back to Positions",
+    "basic_info": "Basic Information",
+    "description": "Position Description",
+    "status_open": "Open",
+    "status_closed": "Closed"
   },
   "contact": {
     "title": "Contact Us",

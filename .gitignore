@@ -50,3 +50,4 @@ packages/frontend/.turbo/*
 .test.sh
 
 dist/
+docs_dev

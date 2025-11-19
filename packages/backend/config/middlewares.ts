@@ -15,6 +15,7 @@ export default ({ env }) => [
             'market-assets.strapi.io',
             // 添加你的 OSS 域名
             `${env('OSS_BUCKET')}.${env('OSS_REGION')}.aliyuncs.com`,
+            `${env('OSS_BASE_URL')}`,
           ],
           'media-src': [
             "'self'",
@@ -23,6 +24,7 @@ export default ({ env }) => [
             'market-assets.strapi.io',
             // 添加你的 OSS 域名
             `${env('OSS_BUCKET')}.${env('OSS_REGION')}.aliyuncs.com`,
+            `${env('OSS_BASE_URL')}`,
           ],
           upgradeInsecureRequests: null,
         },

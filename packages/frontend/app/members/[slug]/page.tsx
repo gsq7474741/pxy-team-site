@@ -82,7 +82,7 @@ export default async function MemberDetailPage({ params }: MemberPageProps) {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* 左侧：头像和基本信息 */}
         <div className="space-y-6">
-          <div className="relative aspect-square overflow-hidden rounded-lg border bg-muted">
+          <div className="relative rounded-lg bg-gradient-to-br from-slate-100 to-slate-200 overflow-hidden shadow-sm" style={{ aspectRatio: '3/4' }}>
             <Image
               src={photoUrl}
               alt={name}

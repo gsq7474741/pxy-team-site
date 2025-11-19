@@ -14,6 +14,7 @@ interface OpeningCardProps {
 
 export default function OpeningCard({ opening }: OpeningCardProps) {
   const t = useTranslations('join');
+  const tCommon = useTranslations('common');
   return (
     <Card className="overflow-hidden transition-all hover:shadow-md">
       <CardHeader>
@@ -88,6 +89,9 @@ export default function OpeningCard({ opening }: OpeningCardProps) {
         )}
       </CardContent>
       <CardFooter className="flex gap-2">
+        <Button variant="outline" size="sm" asChild>
+          <Link href={`/join/${opening.slug}`}>{tCommon('view_details')}</Link>
+        </Button>
         {opening.applyLink && opening.status !== 'Closed' && (
           <Button variant="outline" size="sm" asChild>
             <Link href={opening.applyLink} target="_blank" rel="noopener noreferrer">{t('apply_now')}</Link>

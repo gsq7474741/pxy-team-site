@@ -69,31 +69,35 @@ export default function MembersClient({ members }: Props) {
       </div>
 
       {filteredMembers.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {filteredMembers.map((member) => {
             return (
-              <Card key={member.id} className="overflow-hidden">
-                <CardHeader className="p-0">
-                  <div className="relative h-64 w-full">
+              <Card key={member.id} className="overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-105 group py-0 gap-0 border-0 ring-1 ring-border">
+                <CardHeader className="p-0 space-y-0">
+                  <div className="relative w-full bg-gradient-to-br from-slate-100 to-slate-200 overflow-hidden" style={{ aspectRatio: '3/4' }}>
                     {member.photo?.url ? (
-                      <Image src={member.photo.url} alt={member.name} fill className="object-cover" />
+                      <Image src={member.photo.url} alt={member.name} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
                     ) : (
-                      <div className="h-full w-full bg-muted flex items-center justify-center">
-                        <span className="text-4xl">👤</span>
+                      <div className="h-full w-full flex items-center justify-center">
+                        <span className="text-5xl opacity-30">👤</span>
                       </div>
                     )}
                   </div>
                 </CardHeader>
-                <CardContent className="pt-6">
-                  <h3 className="text-xl font-semibold">{member.name}</h3>
-                  <p className="text-muted-foreground">{translateRole(member.role)}</p>
-                  <p className="mt-2 line-clamp-3">{member.bio}</p>
-                </CardContent>
-                <CardFooter>
-                  <Link href={`/members/${member.slug}`} className="text-primary hover:underline">
-                    {t('view_details')}
-                  </Link>
-                </CardFooter>
+                <div className="flex flex-col flex-1 justify-between">
+                  <CardContent className="px-4 pt-3 pb-2">
+                    <div className="flex items-baseline justify-between mb-1">
+                      <h3 className="text-base font-bold leading-tight">{member.name}</h3>
+                      <span className="text-[10px] font-medium text-primary/80 bg-primary/5 px-1.5 py-0.5 rounded-full">{translateRole(member.role)}</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">{member.bio}</p>
+                  </CardContent>
+                  <CardFooter className="px-4 pb-3 pt-0">
+                    <Link href={`/members/${member.slug}`} className="text-[10px] font-medium text-primary hover:text-primary/80 transition-colors flex items-center gap-1 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 duration-300">
+                      {t('view_details')} <span className="text-xs">→</span>
+                    </Link>
+                  </CardFooter>
+                </div>
               </Card>
             );
           })}

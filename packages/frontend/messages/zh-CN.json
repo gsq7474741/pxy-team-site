@@ -88,7 +88,12 @@
     "requirements": "岗位要求",
     "benefits": "福利待遇",
     "apply_now": "立即申请",
-    "contact_email": "联系邮箱"
+    "contact_email": "联系邮箱",
+    "back_to_list": "返回岗位列表",
+    "basic_info": "基本信息",
+    "description": "岗位描述",
+    "status_open": "招聘中",
+    "status_closed": "已关闭"
   },
   "contact": {
     "title": "联系我们",
