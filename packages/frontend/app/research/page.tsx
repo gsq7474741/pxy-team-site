@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { researchApi, type ResearchAreaViewModel } from "@/lib/strapi-client";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { getLocale } from "@/lib/server-locale";
 import { getTranslations } from 'next-intl/server';

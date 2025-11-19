@@ -41,7 +41,7 @@ export default function MembersClient({ members }: Props) {
   const roles = useMemo(() => Array.from(new Set((members || []).map((m) => m.role).filter(Boolean))), [members]);
   const tabs = useMemo(() => ["all", ...roles], [roles]);
   const filteredMembers = useMemo(() => {
-    let result = activeRole === "all" ? [...members] : members.filter((m) => m.role === activeRole);
+    const result = activeRole === "all" ? [...members] : members.filter((m) => m.role === activeRole);
     
     return result.sort((a, b) => {
       // 1. 导师排在前面

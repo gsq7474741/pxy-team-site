@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { newsApi, getStrapiMedia, formatDate, stripHtmlTags, truncateText, type NewsViewModel } from "@/lib/strapi-client";
+import { newsApi, formatDate, stripHtmlTags, truncateText, type NewsViewModel } from "@/lib/strapi-client";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { getTranslations, getLocale } from 'next-intl/server';

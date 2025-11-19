@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { researchApi, type ResearchAreaViewModel } from "@/lib/strapi-client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, ExternalLink, FileText, Calendar, Trophy } from "lucide-react";
@@ -311,7 +311,7 @@ export async function generateMetadata({ params }: ResearchAreaDetailPageProps) 
       description: researchArea.description,
       keywords: researchArea.keywords?.join(", ") || "",
     };
-  } catch (error) {
+  } catch {
     return {
       title: "研究方向详情 - Prof. Peng 课题组",
       description: "查看我们的研究方向详细信息",

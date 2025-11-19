@@ -57,7 +57,7 @@ export default function ShareButtons({ title }: ShareButtonsProps) {
             await navigator.clipboard.writeText(currentUrl);
             setCopied(true);
             setTimeout(() => setCopied(false), 1500);
-          } catch (e) {
+          } catch {
             // 兼容不支持 clipboard 的环境
             const ok = window.prompt(t('copy_prompt'), currentUrl);
             if (ok !== null) {

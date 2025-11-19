@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatDate, stripHtmlTags } from "@/lib/strapi-client";
+import { formatDate } from "@/lib/strapi-client";
 import { ArrowLeft, Briefcase, MapPin, Calendar, Mail, ExternalLink } from "lucide-react";
 
 interface OpeningDetailPageProps {

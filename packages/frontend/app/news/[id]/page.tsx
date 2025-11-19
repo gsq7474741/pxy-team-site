@@ -21,7 +21,7 @@ export async function generateStaticParams() {
   try {
     const res = await newsApi.getNewsList(1, 1000);
     return (res.data || []).map((n) => ({ id: String(n.id) }));
-  } catch (e) {
+  } catch {
     return [];
   }
 }
@@ -37,7 +37,7 @@ export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
   
   try {
     newsDetail = await newsApi.getNewsById(id, locale);
-  } catch (error) {
+  } catch {
     return notFound();
   }
   

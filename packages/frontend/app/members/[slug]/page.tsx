@@ -17,7 +17,7 @@ export async function generateStaticParams() {
   try {
     const res = await memberApi.getMemberList(1, 1000);
     return (res.data || []).map((m) => ({ slug: m.slug }));
-  } catch (e) {
+  } catch {
     return [];
   }
 }
@@ -40,7 +40,7 @@ export default async function MemberDetailPage({ params }: MemberPageProps) {
   }
 
   // 获取成员信息
-  const { name, englishName, role, bio, email, photo, enrollmentYear, enrollmentStatus } = member;
+  const { name, role, bio, email, photo } = member;
   
   // 翻译角色名称
   const translateRole = (role: string) => {
