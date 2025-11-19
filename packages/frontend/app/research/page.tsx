@@ -28,24 +28,26 @@ export default async function ResearchPageComponent() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {researchAreas.map((area) => (
-          <Card key={area.id} className="transition-all hover:shadow-md flex flex-col">
-            <CardHeader>
-              {/* 如果有封面图片，显示图片；否则显示图标 */}
-              {area.coverImage?.url ? (
-                <div className="relative w-full h-48 mb-3 overflow-hidden rounded-lg">
-                  <Image
-                    src={area.coverImage.url}
-                    alt={area.coverImage.alternativeText || area.title}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              ) : (
-                <div className="text-4xl mb-3">{area.icon}</div>
-              )}
+          <Card key={area.id} className="transition-all hover:shadow-md flex flex-col overflow-hidden py-0 gap-0">
+            {/* 如果有封面图片，显示图片；否则显示图标 */}
+            {area.coverImage?.url ? (
+              <div className="relative w-full overflow-hidden" style={{ aspectRatio: '16/9' }}>
+                <Image
+                  src={area.coverImage.url}
+                  alt={area.coverImage.alternativeText || area.title}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            ) : (
+              <div className="text-6xl bg-muted/30 flex items-center justify-center" style={{ aspectRatio: '16/9' }}>
+                {area.icon}
+              </div>
+            )}
+            <div className="px-6 pt-4">
               <CardTitle className="text-2xl">{area.title}</CardTitle>
-            </CardHeader>
-            <CardContent className="flex-1">
+            </div>
+            <CardContent className="flex-1 px-6 pt-2">
               <p className="text-muted-foreground">{area.description}</p>
               
               {/* 显示研究亮点（如果有的话） */}
@@ -76,7 +78,7 @@ export default async function ResearchPageComponent() {
                 </div>
               )}
             </CardContent>
-            <CardFooter className="flex justify-between">
+            <CardFooter className="flex justify-between px-6 py-4">
               <Button asChild variant="outline">
                 <Link href={`/research/${area.slug}`}>
                   {t('learn_more')}

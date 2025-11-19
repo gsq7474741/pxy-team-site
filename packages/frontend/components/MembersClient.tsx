@@ -40,7 +40,41 @@ export default function MembersClient({ members }: Props) {
 
   const roles = useMemo(() => Array.from(new Set((members || []).map((m) => m.role).filter(Boolean))), [members]);
   const tabs = useMemo(() => ["all", ...roles], [roles]);
-  const filteredMembers = useMemo(() => (activeRole === "all" ? members : members.filter((m) => m.role === activeRole)), [activeRole, members]);
+  const filteredMembers = useMemo(() => {
+    let result = activeRole === "all" ? [...members] : members.filter((m) => m.role === activeRole);
+    
+    return result.sort((a, b) => {
+      // 1. 导师排在前面
+      const isASupervisor = a.role === 'Supervisor';
+      const isBSupervisor = b.role === 'Supervisor';
+      if (isASupervisor && !isBSupervisor) return -1;
+      if (!isASupervisor && isBSupervisor) return 1;
+      
+      // 2. 如果都是导师，按姓名排序（因为没有 order 字段）
+      if (isASupervisor && isBSupervisor) {
+        return (a.name || '').localeCompare(b.name || '', 'zh-CN');
+      }
+
+      // 3. 非导师成员，按状态排序：Graduated 在 Current 前面
+      const statusOrder = { 'Graduated': 0, 'Current': 1 };
+      const statusA = a.enrollmentStatus ? statusOrder[a.enrollmentStatus] ?? 1 : 1;
+      const statusB = b.enrollmentStatus ? statusOrder[b.enrollmentStatus] ?? 1 : 1;
+      
+      if (statusA !== statusB) {
+        return statusA - statusB;
+      }
+
+      // 4. 状态相同，按入学年份排序（升序：入学越早越靠前）
+      const yearA = a.enrollmentYear || 0;
+      const yearB = b.enrollmentYear || 0;
+      if (yearA !== yearB) {
+        return yearA - yearB;
+      }
+
+      // 5. 年份相同，按姓名排序
+      return (a.name || '').localeCompare(b.name || '', 'zh-CN');
+    });
+  }, [activeRole, members]);
 
   return (
     <div className="max-w-screen-xl mx-auto px-4 md:px-6 py-12">
@@ -90,6 +124,24 @@ export default function MembersClient({ members }: Props) {
                       <h3 className="text-base font-bold leading-tight">{member.name}</h3>
                       <span className="text-[10px] font-medium text-primary/80 bg-primary/5 px-1.5 py-0.5 rounded-full">{translateRole(member.role)}</span>
                     </div>
+                    {member.role !== 'Supervisor' && (
+                      <div className="flex gap-1.5 mb-1.5">
+                        {member.enrollmentYear && (
+                          <span className="text-[9px] font-medium text-primary/70 bg-primary/8 px-2 py-0.5 rounded">
+                            {member.enrollmentYear}级
+                          </span>
+                        )}
+                        {member.enrollmentStatus && (
+                          <span className={`text-[9px] font-medium px-2 py-0.5 rounded ${
+                            member.enrollmentStatus === 'Current' 
+                              ? 'text-primary/70 bg-primary/8' 
+                              : 'text-muted-foreground/60 bg-muted/50'
+                          }`}>
+                            {member.enrollmentStatus === 'Current' ? '在读' : '已毕业'}
+                          </span>
+                        )}
+                      </div>
+                    )}
                     <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">{member.bio}</p>
                   </CardContent>
                   <CardFooter className="px-4 pb-3 pt-0">

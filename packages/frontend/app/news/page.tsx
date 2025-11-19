@@ -41,9 +41,9 @@ export default async function NewsPage() {
       {news.length > 0 ? (
         <div className="space-y-6">
           {news.map((item) => (
-            <Card key={item.id} className="overflow-hidden">
+            <Card key={item.id} className="overflow-hidden py-0 gap-0">
               {item.coverImage?.url && (
-                <div className="relative w-full h-48">
+                <div className="relative w-full" style={{ aspectRatio: '21/9' }}>
                   <Image 
                     src={item.coverImage.url}
                     alt={item.title}
@@ -52,18 +52,18 @@ export default async function NewsPage() {
                   />
                 </div>
               )}
-              <CardHeader>
+              <CardHeader className="pt-6">
                 <CardTitle>{item.title}</CardTitle>
                 <CardDescription>
                   {formatDate(item.publishDate)}
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-2">
                 <p className="line-clamp-3">
                   {truncateText(stripHtmlTags(item.content))}
                 </p>
               </CardContent>
-              <CardFooter>
+              <CardFooter className="pb-6 pt-4">
                 <Button asChild variant="outline">
                   <Link href={`/news/${item.id}`}>
                     {t('read_more')}

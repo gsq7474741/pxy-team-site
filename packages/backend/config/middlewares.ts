@@ -7,7 +7,12 @@ export default ({ env }) => [
       contentSecurityPolicy: {
         useDefaults: true,
         directives: {
-          'connect-src': ["'self'", 'https:'],
+          'connect-src': [
+            "'self'", 
+            'https:', 
+            `${env('OSS_BUCKET')}.${env('OSS_REGION')}.aliyuncs.com`,
+            `${env('OSS_BASE_URL')}`,
+          ],
           'img-src': [
             "'self'",
             'data:',

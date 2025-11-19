@@ -95,6 +95,24 @@ export default async function MemberDetailPage({ params }: MemberPageProps) {
           <div className="space-y-2">
             <h1 className="text-2xl font-bold">{name}</h1>
             <p className="text-lg text-muted-foreground">{translateRole(role)}</p>
+            {role !== 'Supervisor' && (
+              <div className="flex gap-2 mt-2">
+                {member.enrollmentYear && (
+                  <span className="text-xs font-medium text-primary/70 bg-primary/8 px-2.5 py-1 rounded">
+                    {member.enrollmentYear}级
+                  </span>
+                )}
+                {member.enrollmentStatus && (
+                  <span className={`text-xs font-medium px-2.5 py-1 rounded ${
+                    member.enrollmentStatus === 'Current' 
+                      ? 'text-primary/70 bg-primary/8' 
+                      : 'text-muted-foreground/60 bg-muted/50'
+                  }`}>
+                    {member.enrollmentStatus === 'Current' ? '在读' : '已毕业'}
+                  </span>
+                )}
+              </div>
+            )}
             {email && (
               <p className="text-sm">
                 <span className="font-medium">{t('email')}:</span> {email}
