@@ -50,8 +50,14 @@ export default function MembersClient({ members }: Props) {
       if (isASupervisor && !isBSupervisor) return -1;
       if (!isASupervisor && isBSupervisor) return 1;
       
-      // 2. 如果都是导师，按姓名排序（因为没有 order 字段）
+      // 2. 如果都是导师，按年份排序（升序：入学越早越靠前）
       if (isASupervisor && isBSupervisor) {
+        const yearA = a.enrollmentYear || 0;
+        const yearB = b.enrollmentYear || 0;
+        if (yearA !== yearB) {
+          return yearA - yearB;
+        }
+        // 年份相同，按姓名排序
         return (a.name || '').localeCompare(b.name || '', 'zh-CN');
       }
 
