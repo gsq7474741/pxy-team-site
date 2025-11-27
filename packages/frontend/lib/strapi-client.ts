@@ -18,8 +18,6 @@ import {
   AwardViewModel,
   ContactPageViewModel,
   JoinUsPageViewModel,
-  PatentPageViewModel,
-  RecruitPageViewModel,
   ResearchAreaViewModel,
   PaginationInfo
 } from './types';
@@ -459,47 +457,6 @@ export const joinUsApi = {
   }
 };
 
-// 专利页面相关 API
-export const patentApi = {
-  // 获取专利页面内容
-  async getPatentPage(locale?: string): Promise<PatentPageViewModel> {
-    try {
-      const patentSingle = client.single('patent-page');
-      const effectiveLocale = locale || getServerLocale();
-      const response = await patentSingle.find({ locale: effectiveLocale }) as unknown as any;
-      
-      if (response.data) {
-        return transformPageData(response.data, 'patent') as PatentPageViewModel;
-      }
-      
-      throw new Error('未找到专利页面内容');
-    } catch (error) {
-      console.error('获取专利页面内容失败:', error);
-      throw error;
-    }
-  }
-};
-
-// 招聘页面相关 API
-export const recruitApi = {
-  // 获取招聘页面内容
-  async getRecruitPage(locale?: string): Promise<RecruitPageViewModel> {
-    try {
-      const recruitSingle = client.single('recruit-page');
-      const effectiveLocale = locale || getServerLocale();
-      const response = await recruitSingle.find({ locale: effectiveLocale }) as unknown as any;
-      
-      if (response.data) {
-        return transformPageData(response.data, 'recruit') as RecruitPageViewModel;
-      }
-      
-      throw new Error('未找到招聘页面内容');
-    } catch (error) {
-      console.error('获取招聘页面内容失败:', error);
-      throw error;
-    }
-  }
-};
 
 // 导出工具函数
 export { getStrapiMedia } from './transformers';
@@ -515,8 +472,6 @@ export type {
   AwardViewModel,
   ContactPageViewModel,
   JoinUsPageViewModel,
-  PatentPageViewModel,
-  RecruitPageViewModel,
   ResearchAreaViewModel,
   MediaFile,
   PaginationInfo

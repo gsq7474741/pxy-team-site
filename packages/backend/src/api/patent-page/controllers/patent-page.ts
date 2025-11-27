@@ -1,7 +1,0 @@
-/**
- * patent-page controller
- */
-
-import { factories } from '@strapi/strapi';
-
-export default factories.createCoreController('api::patent-page.patent-page');

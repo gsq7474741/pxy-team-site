@@ -19,8 +19,11 @@
 
 # turbo
 .turbo/*
-packages/*/.turbo/*
+**/.turbo/*
+**/node_modules/*
 
+# vitepress
+docs/.vitepress
 
 # production
 /build
@@ -44,7 +47,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-packages/frontend/.turbo/*
+
 # local envs
 .github/envs/
 .test.sh

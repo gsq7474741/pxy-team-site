@@ -2,8 +2,8 @@ import { memberApi, type MemberViewModel } from "@/lib/strapi-client";
 import MembersClient from "@/components/MembersClient";
 import { getLocale } from 'next-intl/server';
 
-// 团队成员页面缓存：300秒（配合 Webhook 实现实时更新）
-export const revalidate = 300;
+// 强制动态渲染，因为使用了 cookies() 进行语言检测
+export const dynamic = 'force-dynamic';
 
 export default async function MembersPage() {
   const locale = await getLocale();

@@ -2,6 +2,9 @@ import { publicationApi, patentsApi, awardsApi, type PublicationViewModel, type 
 import PublicationsClient from "@/components/PublicationsClient";
 import { getLocale } from 'next-intl/server';
 
+// 强制动态渲染，因为使用了 cookies() 进行语言检测
+export const dynamic = 'force-dynamic';
+
 export default async function PublicationsPage() {
   const locale = await getLocale();
   let publications: PublicationViewModel[] = [];

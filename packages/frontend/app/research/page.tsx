@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { getLocale } from "@/lib/server-locale";
 import { getTranslations } from 'next-intl/server';
 
+// 强制动态渲染，因为使用了 cookies() 进行语言检测
+export const dynamic = 'force-dynamic';
+
 export default async function ResearchPageComponent() {
   const t = await getTranslations('research');
   const locale = await getLocale();

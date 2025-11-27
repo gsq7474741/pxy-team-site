@@ -5,8 +5,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { getTranslations, getLocale } from 'next-intl/server';
 
-// 新闻页面缓存：300秒（配合 Webhook 实现实时更新）
-export const revalidate = 300;
+// 强制动态渲染，因为使用了 cookies() 进行语言检测
+export const dynamic = 'force-dynamic';
 
 // 新闻列表页面
 

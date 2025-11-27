@@ -9,15 +9,11 @@ import {
   publicationApi, 
   contactApi, 
   joinUsApi, 
-  patentApi, 
-  recruitApi,
   type NewsViewModel,
   type MemberViewModel,
   type PublicationViewModel,
   type ContactPageViewModel,
-  type JoinUsPageViewModel,
-  type PatentPageViewModel,
-  type RecruitPageViewModel
+  type JoinUsPageViewModel
 } from './strapi-client';
 
 // 统一的错误处理
@@ -130,26 +126,6 @@ export class DataService {
       return response as JoinUsPageViewModel;
     } catch (error) {
       handleApiError(error, '获取加入我们页面内容');
-      return null;
-    }
-  }
-
-  static async getPatentPage() {
-    try {
-      const response = await patentApi.getPatentPage();
-      return response as PatentPageViewModel;
-    } catch (error) {
-      handleApiError(error, '获取专利页面内容');
-      return null;
-    }
-  }
-
-  static async getRecruitPage() {
-    try {
-      const response = await recruitApi.getRecruitPage();
-      return response as RecruitPageViewModel;
-    } catch (error) {
-      handleApiError(error, '获取招聘页面内容');
       return null;
     }
   }

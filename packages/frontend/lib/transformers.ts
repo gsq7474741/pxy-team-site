@@ -16,8 +16,6 @@ import {
   AwardViewModel,
   ContactPageViewModel,
   JoinUsPageViewModel,
-  PatentPageViewModel,
-  RecruitPageViewModel,
   ResearchAreaViewModel,
   MediaFile
 } from './types';
@@ -244,8 +242,8 @@ export const transformPublication = (strapiPublication: any): PublicationViewMod
 };
 
 // 通用页面数据转换器
-export const transformPageData = (strapiData: any, type: 'contact' | 'join-us' | 'patent' | 'recruit'): 
-  ContactPageViewModel | JoinUsPageViewModel | PatentPageViewModel | RecruitPageViewModel => {
+export const transformPageData = (strapiData: any, type: 'contact' | 'join-us'): 
+  ContactPageViewModel | JoinUsPageViewModel => {
   
   // 处理新版 Strapi SDK 的 Document 格式
   const id = strapiData.documentId || strapiData.id;
@@ -271,14 +269,8 @@ export const transformPageData = (strapiData: any, type: 'contact' | 'join-us' |
     case 'join-us':
       return baseData as JoinUsPageViewModel;
     
-    case 'patent':
-      return baseData as PatentPageViewModel;
-    
-    case 'recruit':
-      return baseData as RecruitPageViewModel;
-    
     default:
-      return baseData as any;
+      return baseData as ContactPageViewModel;
   }
 };
 

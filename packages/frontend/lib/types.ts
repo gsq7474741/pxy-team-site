@@ -106,24 +106,6 @@ export interface JoinUsPageViewModel {
   updatedAt?: string;
 }
 
-export interface PatentPageViewModel {
-  id: string;
-  title?: string;
-  content?: string;
-  patents?: string;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-export interface RecruitPageViewModel {
-  id: string;
-  title?: string;
-  content?: string;
-  positions?: string;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
 // 招聘岗位（结构化数据）
 export interface OpeningViewModel {
   id: string;

@@ -2,6 +2,9 @@ import OpeningCard from "@/components/OpeningCard";
 import { openingApi, type OpeningViewModel } from "@/lib/strapi-client";
 import { getTranslations } from 'next-intl/server';
 
+// 强制动态渲染，因为使用了 cookies() 进行语言检测
+export const dynamic = 'force-dynamic';
+
 export default async function JoinUsPage() {
   const t = await getTranslations('join');
   const tCommon = await getTranslations('common');

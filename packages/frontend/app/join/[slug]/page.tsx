@@ -7,6 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDate } from "@/lib/strapi-client";
 import { ArrowLeft, Briefcase, MapPin, Calendar, Mail, ExternalLink } from "lucide-react";
 
+// 强制动态渲染，因为使用了 cookies() 进行语言检测
+export const dynamic = 'force-dynamic';
+
 interface OpeningDetailPageProps {
   params: Promise<{ slug: string }>;
 }

@@ -7,10 +7,8 @@ import { researchApi, newsApi, type ResearchAreaViewModel, type NewsViewModel, f
 import { getLocale } from "@/lib/server-locale";
 import { getTranslations } from 'next-intl/server';
 
-// 数据缓存时间：300秒（5分钟）
-// 通过 On-Demand Revalidation，Strapi 更新时会立即清除缓存
-// 此设置作为备份机制，防止 Webhook 失败时内容长期不更新
-export const revalidate = 300;
+// 强制动态渲染，因为使用了 cookies() 进行语言检测
+export const dynamic = 'force-dynamic';
 
 export default async function Home() {
   const t = await getTranslations('home');

@@ -5,15 +5,28 @@
 
 import { getRequestConfig } from 'next-intl/server';
 import { cookies } from 'next/headers';
-import { defaultLocale } from './config';
+import { defaultLocale, locales } from './config';
+
+async function getLocaleFromCookies(): Promise<string> {
+  try {
+    const cookieStore = await cookies();
+    const localeCookie = cookieStore.get('NEXT_LOCALE');
+    const locale = localeCookie?.value;
+    
+    // 验证 locale 是否有效
+    if (locale && locales.includes(locale as 'zh-CN' | 'en')) {
+      return locale;
+    }
+  } catch {
+    // 在构建时或静态生成时，cookies() 可能不可用
+    // 静默失败，使用默认语言
+  }
+  
+  return defaultLocale;
+}
 
 export default getRequestConfig(async () => {
-  // 从 Cookie 读取用户选择的语言
-  const cookieStore = await cookies();
-  const localeCookie = cookieStore.get('NEXT_LOCALE');
-  
-  // 使用 Cookie 中的语言，否则使用默认语言
-  const locale = localeCookie?.value || defaultLocale;
+  const locale = await getLocaleFromCookies();
 
   return {
     locale,

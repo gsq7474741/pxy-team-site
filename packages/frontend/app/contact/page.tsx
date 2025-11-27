@@ -7,6 +7,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { contactApi, type ContactPageViewModel } from "@/lib/strapi-client";
 import { getTranslations } from 'next-intl/server';
 
+// 强制动态渲染，因为使用了 cookies() 进行语言检测
+export const dynamic = 'force-dynamic';
+
 export default async function ContactPage() {
   const t = await getTranslations('contact');
   // 获取联系页面数据
