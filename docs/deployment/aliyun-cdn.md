@@ -145,6 +145,22 @@ https://static.prof-peng.team/image.jpg?x-oss-process=image/resize,w_300
 
 ## 访问控制
 
+### CORS 跨域配置
+
+如果 Strapi 管理后台需要通过 CDN 加载图片进行裁剪等操作，必须配置 CORS 响应头：
+
+1. 进入域名管理 → 缓存配置 → HTTP头
+2. 添加响应头配置：
+
+| 参数名称 | 参数值 | 说明 |
+|----------|--------|------|
+| Access-Control-Allow-Origin | `https://cms.prof-peng.team` | 允许管理后台跨域访问 |
+| Access-Control-Allow-Methods | `GET, HEAD, OPTIONS` | 允许的请求方法 |
+| Access-Control-Allow-Headers | `*` | 允许的请求头 |
+| Access-Control-Max-Age | `86400` | 预检请求缓存时间（秒） |
+
+> **注意**：如果不配置 CORS，Strapi 管理后台的图片裁剪功能会报 "Tainted canvases may not be exported" 错误。
+
 ### Referer 防盗链
 
 ```
